@@ -1,5 +1,5 @@
-import { useQuran } from '../context/QuranContext';
-import { isBookmarked } from '../utils/storage';
+import { useQuran } from '../../context/QuranContext';
+import { isBookmarked } from '../../utils/storage';
 
 export default function BookmarkButton({ surahNumber, className = '' }) {
   const { bookmarks, toggleBookmark } = useQuran();

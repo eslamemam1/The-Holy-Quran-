@@ -1,6 +1,6 @@
 .bg {
   background-color: #faf8f3;
-  background-image: url('./bg.png');
+  background-image: url('../assets/images/bg.png');
   background-size: cover;
   background-position: center;
   background-attachment: fixed;

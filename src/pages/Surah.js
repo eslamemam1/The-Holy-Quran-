@@ -1,15 +1,15 @@
 import { useEffect, useState, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import image from './473.png';
-import numberAyah from './ayahNumber.png';
-import Play from './Play';
-import LoadingSpinner from './components/LoadingSpinner';
-import ErrorBanner from './components/ErrorBanner';
-import AudioControl from './components/AudioControl';
-import SurahPicker from './components/SurahPicker';
-import BookmarkButton from './components/BookmarkButton';
-import { useQuran } from './context/QuranContext';
-import { clampSurah } from './utils/storage';
+import bismillah from '../assets/images/473.png';
+import numberAyah from '../assets/images/ayahNumber.png';
+import Play from '../components/quran/Play';
+import LoadingSpinner from '../components/ui/LoadingSpinner';
+import ErrorBanner from '../components/ui/ErrorBanner';
+import AudioControl from '../components/ui/AudioControl';
+import SurahPicker from '../components/quran/SurahPicker';
+import BookmarkButton from '../components/quran/BookmarkButton';
+import { useQuran } from '../context/QuranContext';
+import { clampSurah } from '../utils/storage';
 
 const Surah = () => {
   const { surahId } = useParams();
@@ -111,7 +111,7 @@ const Surah = () => {
 
         <div className="mb-8 flex justify-center">
           <img
-            src={image}
+            src={bismillah}
             alt="Bismillah"
             className="mx-auto max-w-xs opacity-90 sm:max-w-sm"
           />

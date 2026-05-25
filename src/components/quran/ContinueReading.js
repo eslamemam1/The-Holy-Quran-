@@ -1,4 +1,4 @@
-import { useQuran } from '../context/QuranContext';
+import { useQuran } from '../../context/QuranContext';
 
 export default function ContinueReading() {
   const { lastRead, goToSurah, goToAyah, getSurahMeta } = useQuran();

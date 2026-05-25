@@ -1,5 +1,5 @@
-import playIcon from '../play.png';
-import stopIcon from '../stop.png';
+import playIcon from '../../assets/images/play.png';
+import stopIcon from '../../assets/images/stop.png';
 
 export default function AudioControl({ playing, onPlay, onPause, className = '' }) {
   return (

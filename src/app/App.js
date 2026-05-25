@@ -1,12 +1,12 @@
 import './App.css';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import Home from './Home';
-import Surah from './Surah';
-import Ayah from './Ayah';
-import Navbar from './components/Navbar';
-import Footer from './components/Footer';
-import ScrollToTop from './components/ScrollToTop';
-import { QuranProvider, useQuran } from './context/QuranContext';
+import Home from '../pages/Home';
+import Surah from '../pages/Surah';
+import Ayah from '../pages/Ayah';
+import Navbar from '../components/layout/Navbar';
+import Footer from '../components/layout/Footer';
+import ScrollToTop from '../components/layout/ScrollToTop';
+import { QuranProvider, useQuran } from '../context/QuranContext';
 
 function RedirectToLastSurah() {
   const { lastRead } = useQuran();

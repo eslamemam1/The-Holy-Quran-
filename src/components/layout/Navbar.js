@@ -1,6 +1,6 @@
 import { NavLink, Link } from 'react-router-dom';
-import icon from '../icon.png';
-import { useQuran } from '../context/QuranContext';
+import icon from '../../assets/images/icon.png';
+import { useQuran } from '../../context/QuranContext';
 
 const navClass = ({ isActive }) =>
   `nav-link ${isActive ? 'nav-link-active' : ''}`;

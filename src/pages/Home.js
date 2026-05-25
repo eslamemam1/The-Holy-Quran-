@@ -1,12 +1,12 @@
 import React, { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import qurankareem from './qurankareem.png';
-import LoadingSpinner from './components/LoadingSpinner';
-import ErrorBanner from './components/ErrorBanner';
-import SearchBar from './components/SearchBar';
-import ContinueReading from './components/ContinueReading';
-import BookmarkButton from './components/BookmarkButton';
-import { useQuran } from './context/QuranContext';
+import qurankareem from '../assets/images/qurankareem.png';
+import LoadingSpinner from '../components/ui/LoadingSpinner';
+import ErrorBanner from '../components/ui/ErrorBanner';
+import SearchBar from '../components/ui/SearchBar';
+import ContinueReading from '../components/quran/ContinueReading';
+import BookmarkButton from '../components/quran/BookmarkButton';
+import { useQuran } from '../context/QuranContext';
 
 function matchesSearch(surah, num, query) {
   const q = query.trim().toLowerCase();

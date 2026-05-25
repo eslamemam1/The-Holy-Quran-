@@ -1,12 +1,12 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import numberAyah from './ayahNumber.png';
-import LoadingSpinner from './components/LoadingSpinner';
-import AudioControl from './components/AudioControl';
-import SurahPicker from './components/SurahPicker';
-import BookmarkButton from './components/BookmarkButton';
-import { useQuran } from './context/QuranContext';
-import { clampSurah, clampAyah } from './utils/storage';
+import numberAyah from '../assets/images/ayahNumber.png';
+import LoadingSpinner from '../components/ui/LoadingSpinner';
+import AudioControl from '../components/ui/AudioControl';
+import SurahPicker from '../components/quran/SurahPicker';
+import BookmarkButton from '../components/quran/BookmarkButton';
+import { useQuran } from '../context/QuranContext';
+import { clampSurah, clampAyah } from '../utils/storage';
 
 function Ayah() {
   const { surahId, ayahId } = useParams();

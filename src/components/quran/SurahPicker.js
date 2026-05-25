@@ -1,5 +1,5 @@
-import { useQuran } from '../context/QuranContext';
-import { clampSurah } from '../utils/storage';
+import { useQuran } from '../../context/QuranContext';
+import { clampSurah } from '../../utils/storage';
 
 export default function SurahPicker({ currentSurah, onSelect, className = '' }) {
   const { surahList, listLoading } = useQuran();

@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import AudioControl from './components/AudioControl';
+import AudioControl from '../ui/AudioControl';
 
 function Play(props) {
   const [audioofayah, setAudioofayah] = useState(false);
