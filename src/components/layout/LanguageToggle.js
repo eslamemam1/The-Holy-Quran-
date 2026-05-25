@@ -5,7 +5,7 @@ export default function LanguageToggle() {
 
   return (
     <div
-      className="flex rounded-2xl border border-quran-border bg-quran-cream p-0.5"
+      className="flex rounded-2xl border border-quran-border/80 bg-white/70 p-0.5 shadow-sm backdrop-blur-sm"
       role="group"
       aria-label={t('lang.switch')}
     >

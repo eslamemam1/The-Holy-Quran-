@@ -18,7 +18,7 @@ export default function Navbar() {
       : `/surah/${lastRead.surah}/reading/page/${lastRead.mushafPage || 1}`;
 
   return (
-    <header className="sticky top-0 z-50 border-b border-quran-border bg-quran-surface/98 shadow-card backdrop-blur-md">
+    <header className="site-navbar">
       <nav className="mx-auto flex h-[3.75rem] max-w-6xl items-center justify-between gap-2 px-4 sm:gap-4 sm:px-6">
         <Link
           to="/"

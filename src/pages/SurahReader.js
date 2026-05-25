@@ -71,7 +71,7 @@ export function SurahReaderLayout() {
   const totalPages = pages.length || 1;
   const currentPage = clampSurahPage(pageNum, totalPages);
 
-  const [showTranslation, setShowTranslation] = useState(true);
+  const [showTranslation, setShowTranslation] = useState(false);
   const continueReadingAudioRef = useRef(false);
   const [selectedAyahInsurah, setSelectedAyahInsurah] = useState(null);
 
