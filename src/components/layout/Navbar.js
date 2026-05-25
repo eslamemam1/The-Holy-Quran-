@@ -27,7 +27,7 @@ export default function Navbar() {
           <img
             src={icon}
             alt={t("appName")}
-            className="h-9 w-9 shrink-0 rounded-xl object-contain"
+            className="h-9 w-9 shrink-0 rounded-xl object-contain opacity-80"
           />
           <span className="truncate text-base font-bold text-quran-primary sm:text-lg">
             {t("appName")}
