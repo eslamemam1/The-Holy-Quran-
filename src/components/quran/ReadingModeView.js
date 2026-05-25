@@ -1,14 +1,14 @@
-import { useMemo, useState, useCallback, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useLanguage } from '../../context/LanguageContext';
+import { useMemo, useState, useCallback, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useLanguage } from "../../context/LanguageContext";
 import {
   getAyahTranslation,
   getPreBismillahArabic,
   getPreBismillahTranslation,
-} from '../../i18n/content';
-import { groupAyahsByMushafPage, showBismillah } from '../../utils/mushaf';
-import AyahNumberMenu from './AyahNumberMenu';
-import { useReaderMobileChrome } from '../../context/ReaderMobileChromeContext';
+} from "../../i18n/content";
+import { groupAyahsByMushafPage, showBismillah } from "../../utils/mushaf";
+import AyahNumberMenu from "./AyahNumberMenu";
+import { useReaderMobileChrome } from "../../context/ReaderMobileChromeContext";
 
 export default function ReadingModeView({
   surah,
@@ -26,10 +26,7 @@ export default function ReadingModeView({
   const navigate = useNavigate();
   const [openMenuAyah, setOpenMenuAyah] = useState(null);
 
-  const pages = useMemo(
-    () => groupAyahsByMushafPage(data.ayahs),
-    [data.ayahs]
-  );
+  const pages = useMemo(() => groupAyahsByMushafPage(data.ayahs), [data.ayahs]);
   const pageIndex = Math.min(totalPages, Math.max(1, pageNum)) - 1;
   const pageAyahs = pages[pageIndex]?.ayahs ?? data.ayahs;
   const mushafPage = pages[pageIndex]?.mushafPage;
@@ -44,7 +41,7 @@ export default function ReadingModeView({
     (ayahNum) => {
       navigate(`/surah/${surah}/verse/${ayahNum}`);
     },
-    [navigate, surah]
+    [navigate, surah],
   );
 
   const { setPageNav, clearPageNav } = useReaderMobileChrome();
@@ -65,34 +62,36 @@ export default function ReadingModeView({
   return (
     <div className="reader-reading-wrap mx-auto max-w-3xl px-3 py-4 sm:px-6 sm:py-6">
       <p className="reader-select-ayah-hint mb-3 hidden text-center text-xs text-quran-muted md:mb-4 md:block">
-        {t('reader.selectAyahHint')}
+        {t("reader.selectAyahHint")}
       </p>
 
       <div className="reader-reading-panel">
-        {pageNum === 1 && showBismillah(surah) && getPreBismillahArabic(data) && (
-          <div className="reader-bismillah-block mb-6 text-center">
-            <p
-              className="reader-bismillah arabic-text text-2xl sm:text-3xl"
-              dir="rtl"
-            >
-              {getPreBismillahArabic(data)}
-            </p>
-            {showTranslation && getPreBismillahTranslation(data, lang) && (
+        {pageNum === 1 &&
+          showBismillah(surah) &&
+          getPreBismillahArabic(data) && (
+            <div className="reader-bismillah-block mb-6 text-center">
               <p
-                className="mt-3 text-sm leading-relaxed text-quran-muted"
-                dir={lang === 'ar' ? 'rtl' : 'ltr'}
+                className="reader-bismillah arabic-text text-xl sm:text-3xl"
+                dir="rtl"
               >
-                {getPreBismillahTranslation(data, lang)}
+                {getPreBismillahArabic(data)}
               </p>
-            )}
-          </div>
-        )}
+              {showTranslation && getPreBismillahTranslation(data, lang) && (
+                <p
+                  className="mt-3 text-sm leading-relaxed text-quran-muted"
+                  dir={lang === "ar" ? "rtl" : "ltr"}
+                >
+                  {getPreBismillahTranslation(data, lang)}
+                </p>
+              )}
+            </div>
+          )}
 
         <p className="reader-continuous arabic-text" dir="rtl">
           {pageAyahs.map((ayah, i) => {
             const ayahNum = ayah.number?.insurah ?? i + 1;
             const globalIndex = data.ayahs.findIndex(
-              (a) => a.number?.insurah === ayah.number?.insurah
+              (a) => a.number?.insurah === ayah.number?.insurah,
             );
             const isPlaying =
               activeAyahInsurah != null && ayahNum === activeAyahInsurah;
@@ -102,7 +101,7 @@ export default function ReadingModeView({
             return (
               <span
                 key={ayah.number?.inquran ?? globalIndex}
-                className={`reader-ayah-inline${isPlaying ? ' reader-ayah-inline--active' : ''}`}
+                className={`reader-ayah-inline${isPlaying ? " reader-ayah-inline--active" : ""}`}
               >
                 <span className="reader-ayah-words">{ayah.text.ar}</span>
                 <AyahNumberMenu
@@ -118,7 +117,7 @@ export default function ReadingModeView({
                   t={t}
                   lang={lang}
                 />
-                {'\u00A0'}
+                {"\u00A0"}
               </span>
             );
           })}
@@ -127,20 +126,21 @@ export default function ReadingModeView({
         {showTranslation && (
           <div
             className="reader-translations-block"
-            dir={lang === 'ar' ? 'rtl' : 'ltr'}
+            dir={lang === "ar" ? "rtl" : "ltr"}
           >
             {pageAyahs.map((ayah, i) => {
               const ayahNum = ayah.number?.insurah ?? i + 1;
               const isHighlighted =
                 (activeAyahInsurah != null && ayahNum === activeAyahInsurah) ||
-                (selectedAyahInsurah != null && ayahNum === selectedAyahInsurah);
+                (selectedAyahInsurah != null &&
+                  ayahNum === selectedAyahInsurah);
               return (
                 <p
                   key={`tr-${ayah.number?.inquran ?? i}`}
-                  className={`reader-translation-line${isHighlighted ? ' reader-translation-line--selected' : ''}`}
+                  className={`reader-translation-line${isHighlighted ? " reader-translation-line--selected" : ""}`}
                   onClick={() => toggleMenu(ayahNum)}
                   onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
+                    if (e.key === "Enter" || e.key === " ") {
                       e.preventDefault();
                       toggleMenu(ayahNum);
                     }
@@ -160,37 +160,37 @@ export default function ReadingModeView({
       {totalPages > 1 && (
         <nav
           className="reader-page-nav mt-8 hidden flex-wrap items-center justify-center gap-2 px-4 py-4 md:flex"
-          aria-label={t('mushaf.page')}
+          aria-label={t("mushaf.page")}
         >
-            <button
-              type="button"
-              className="reader-action-btn"
-              disabled={pageNum <= 1}
-              onClick={() => onPageChange(pageNum - 1)}
-            >
-              {t('mushaf.prevPage')}
-            </button>
-            <span className="px-3 text-sm font-medium text-quran-muted">
-              {t('reader.pageNav', { current: pageNum, total: totalPages })}
-              {mushafPage
-                ? ` · ${t('mushaf.mushafPage', { page: mushafPage })}`
-                : ''}
-              {(activeAyahInsurah ?? selectedAyahInsurah) != null && (
-                <span className="inline before:mx-1 before:content-['·']">
-                  {t('reader.startFromAyah', {
-                    n: activeAyahInsurah ?? selectedAyahInsurah,
-                  })}
-                </span>
-              )}
-            </span>
-            <button
-              type="button"
-              className="reader-action-btn"
-              disabled={pageNum >= totalPages}
-              onClick={() => onPageChange(pageNum + 1)}
-            >
-              {t('mushaf.nextPage')}
-            </button>
+          <button
+            type="button"
+            className="reader-action-btn"
+            disabled={pageNum <= 1}
+            onClick={() => onPageChange(pageNum - 1)}
+          >
+            {t("mushaf.prevPage")}
+          </button>
+          <span className="px-3 text-sm font-medium text-quran-muted">
+            {t("reader.pageNav", { current: pageNum, total: totalPages })}
+            {mushafPage
+              ? ` · ${t("mushaf.mushafPage", { page: mushafPage })}`
+              : ""}
+            {(activeAyahInsurah ?? selectedAyahInsurah) != null && (
+              <span className="inline before:mx-1 before:content-['·']">
+                {t("reader.startFromAyah", {
+                  n: activeAyahInsurah ?? selectedAyahInsurah,
+                })}
+              </span>
+            )}
+          </span>
+          <button
+            type="button"
+            className="reader-action-btn"
+            disabled={pageNum >= totalPages}
+            onClick={() => onPageChange(pageNum + 1)}
+          >
+            {t("mushaf.nextPage")}
+          </button>
         </nav>
       )}
     </div>
