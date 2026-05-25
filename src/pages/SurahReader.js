@@ -16,6 +16,7 @@ import { useQuran } from '../context/QuranContext';
 import { clampSurah, clampAyah } from '../utils/storage';
 import { useLanguage } from '../context/LanguageContext';
 import { groupAyahsByMushafPage, clampSurahPage } from '../utils/mushaf';
+import { getSurahRecitationUrl } from '../i18n/content';
 
 function useSurahData(surah) {
   const { loadSurah, loadingSurah, fetchError, surahCache } = useQuran();
@@ -62,6 +63,50 @@ export function SurahReaderLayout() {
   const [playing, setPlaying] = useState(false);
   const [showTranslation, setShowTranslation] = useState(true);
   const audioRef = useRef();
+  const continueListeningRef = useRef(false);
+
+  const stopAudio = useCallback(() => {
+    const el = audioRef.current;
+    if (el) {
+      el.pause();
+      el.currentTime = 0;
+    }
+    setPlaying(false);
+  }, []);
+
+  const handleSelectSurah = useCallback(
+    (n) => {
+      const next = clampSurah(n);
+      if (next === surah) return;
+      continueListeningRef.current = playing;
+      stopAudio();
+      if (location.pathname.includes('/verse/')) {
+        goToVerse(next, 1);
+      } else {
+        goToSurah(next, 1);
+      }
+    },
+    [surah, playing, stopAudio, location.pathname, goToVerse, goToSurah]
+  );
+
+  useEffect(() => {
+    const el = audioRef.current;
+    const src = getSurahRecitationUrl(data);
+    if (!el || !src) return;
+
+    if (continueListeningRef.current) {
+      continueListeningRef.current = false;
+      el.load();
+      el.play()
+        .then(() => setPlaying(true))
+        .catch(() => setPlaying(false));
+      return;
+    }
+
+    el.pause();
+    el.currentTime = 0;
+    setPlaying(false);
+  }, [surah, data?.recitation?.full]);
 
   const outletContext = useMemo(
     () => ({
@@ -108,15 +153,11 @@ export function SurahReaderLayout() {
           audioRef.current?.pause();
           setPlaying(false);
         }}
-        onSelectSurah={(n) =>
-          location.pathname.includes('/verse/')
-            ? goToVerse(n, 1)
-            : goToSurah(n, 1)
-        }
+        onSelectSurah={handleSelectSurah}
       />
       <audio
         ref={audioRef}
-        src={data.recitation?.full}
+        src={getSurahRecitationUrl(data)}
         className="hidden"
         onEnded={() => setPlaying(false)}
       />

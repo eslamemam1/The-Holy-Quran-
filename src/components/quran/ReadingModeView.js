@@ -1,7 +1,11 @@
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../../context/LanguageContext';
-import { getAyahReading } from '../../i18n/content';
+import {
+  getAyahTranslation,
+  getPreBismillahArabic,
+  getPreBismillahTranslation,
+} from '../../i18n/content';
 import { groupAyahsByMushafPage, showBismillah } from '../../utils/mushaf';
 
 export default function ReadingModeView({
@@ -25,13 +29,23 @@ export default function ReadingModeView({
   return (
     <div className="reader-reading-wrap mx-auto max-w-3xl px-4 py-6 sm:px-6">
       <div className="reader-reading-panel">
-        {pageNum === 1 && showBismillah(surah) && (
-          <p
-            className="reader-bismillah arabic-text text-center text-2xl sm:text-3xl"
-            dir="rtl"
-          >
-            بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ
-          </p>
+        {pageNum === 1 && showBismillah(surah) && getPreBismillahArabic(data) && (
+          <div className="reader-bismillah-block mb-6 text-center">
+            <p
+              className="reader-bismillah arabic-text text-2xl sm:text-3xl"
+              dir="rtl"
+            >
+              {getPreBismillahArabic(data)}
+            </p>
+            {showTranslation && getPreBismillahTranslation(data, lang) && (
+              <p
+                className="mt-3 text-sm leading-relaxed text-quran-muted"
+                dir={lang === 'ar' ? 'rtl' : 'ltr'}
+              >
+                {getPreBismillahTranslation(data, lang)}
+              </p>
+            )}
+          </div>
         )}
 
         <p className="reader-continuous arabic-text" dir="rtl">
@@ -70,7 +84,7 @@ export default function ReadingModeView({
               return (
                 <p key={`tr-${ayah.number?.inquran ?? i}`} className="reader-translation-line">
                   <span className="reader-translation-num">{ayahNum}. </span>
-                  {getAyahReading(ayah, lang)}
+                  {getAyahTranslation(ayah, lang)}
                 </p>
               );
             })}

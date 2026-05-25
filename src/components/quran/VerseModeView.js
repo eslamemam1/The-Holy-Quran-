@@ -2,7 +2,12 @@ import { useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Play from './Play';
 import { useLanguage } from '../../context/LanguageContext';
-import { getAyahReading } from '../../i18n/content';
+import {
+  getAyahTranslation,
+  getAyahTransliteration,
+  getAyahTafsir,
+  hasAyahTafsir,
+} from '../../i18n/content';
 import { clampAyah } from '../../utils/storage';
 
 export default function VerseModeView({
@@ -91,15 +96,20 @@ export default function VerseModeView({
               {t('content.translation')}
             </p>
             <p className="text-lg leading-relaxed text-quran-text">
-              {getAyahReading(currentAyah, lang)}
+              {getAyahTranslation(currentAyah, lang)}
             </p>
-            {currentAyah.translation?.en && (
+            {lang !== 'ar' && getAyahTransliteration(currentAyah) && (
+              <p className="mt-3 text-sm italic leading-relaxed text-quran-muted">
+                {t('content.transliteration')}: {getAyahTransliteration(currentAyah)}
+              </p>
+            )}
+            {hasAyahTafsir(currentAyah, lang) && (
               <>
                 <p className="mb-2 mt-4 text-xs font-bold uppercase tracking-wide text-quran-muted">
                   {t('content.tafsir')}
                 </p>
                 <p className="text-base leading-relaxed text-quran-muted">
-                  {currentAyah.translation.en}
+                  {getAyahTafsir(currentAyah, lang)}
                 </p>
               </>
             )}

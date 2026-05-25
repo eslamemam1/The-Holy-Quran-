@@ -2,7 +2,13 @@ import { Link, useLocation } from 'react-router-dom';
 import SurahPicker from './SurahPicker';
 import BookmarkButton from './BookmarkButton';
 import { useLanguage } from '../../context/LanguageContext';
-import { getSurahName, getSurahMeaning } from '../../i18n/content';
+import {
+  getSurahName,
+  getSurahMeaning,
+  getSurahType,
+  getSurahTafsir,
+  hasSurahTafsir,
+} from '../../i18n/content';
 
 export default function SurahReaderHeader({
   surah,
@@ -32,6 +38,12 @@ export default function SurahReaderHeader({
               </h1>
               <p className="mt-0.5 text-sm text-quran-muted">
                 {getSurahMeaning(data, lang)}
+                {getSurahType(data, lang) && (
+                  <span className="reader-surah-type">
+                    {' · '}
+                    {getSurahType(data, lang)}
+                  </span>
+                )}
               </p>
               {lang !== 'ar' && (
                 <p className="arabic-text mt-1 text-lg text-quran-primary">
@@ -42,6 +54,15 @@ export default function SurahReaderHeader({
           </div>
           <BookmarkButton surahNumber={surah} className="h-10 w-10" />
         </div>
+
+        {hasSurahTafsir(data, lang) && (
+          <p
+            className="mb-4 text-sm leading-relaxed text-quran-muted"
+            dir={lang === 'ar' ? 'rtl' : 'ltr'}
+          >
+            {getSurahTafsir(data, lang)}
+          </p>
+        )}
 
         <div className="mb-4 flex flex-wrap items-center gap-2">
           <Link

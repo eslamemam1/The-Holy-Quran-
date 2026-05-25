@@ -3,7 +3,7 @@ import bismillah from '../../assets/images/473.png';
 import Play from './Play';
 import { showBismillah } from '../../utils/mushaf';
 import { useLanguage } from '../../context/LanguageContext';
-import { getAyahReading, getAyahTransliteration } from '../../i18n/content';
+import { getAyahTranslation, getAyahTransliteration } from '../../i18n/content';
 
 export default function MushafPageView({
   surah,
@@ -80,7 +80,7 @@ export default function MushafPageView({
                 {t('ayah.label')} {ayah.number?.insurah}
               </p>
               <p className="text-base leading-relaxed text-slate-700">
-                {getAyahReading(ayah, lang)}
+                {getAyahTranslation(ayah, lang)}
               </p>
               {lang === 'ar' && getAyahTransliteration(ayah) && (
                 <p className="mt-1 text-sm italic text-quran-muted">

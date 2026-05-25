@@ -1,9 +1,12 @@
 import { useState, useRef } from 'react';
 import AudioControl from '../ui/AudioControl';
+import { getAyahAudioUrl } from '../../i18n/content';
 
 function Play(props) {
   const [audioofayah, setAudioofayah] = useState(false);
   const audioOfayah = useRef();
+  const ayah = props.quran?.data?.ayahs?.[props.id];
+  const audioSrc = getAyahAudioUrl(ayah);
 
   const play = () => {
     audioOfayah.current?.play();
@@ -17,13 +20,13 @@ function Play(props) {
 
   const audioEnded = () => setAudioofayah(false);
 
-  if (props.loading) return null;
+  if (props.loading || !audioSrc) return null;
 
   return (
     <div>
       <audio
         onEnded={audioEnded}
-        src={props.quran.data.ayahs[props.id].audio.url}
+        src={audioSrc}
         ref={audioOfayah}
         className="hidden"
       />
