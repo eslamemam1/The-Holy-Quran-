@@ -1,14 +1,14 @@
-import React, { useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
-import qurankareem from '../assets/images/qurankareem.png';
-import LoadingSpinner from '../components/ui/LoadingSpinner';
-import ErrorBanner from '../components/ui/ErrorBanner';
-import SearchBar from '../components/ui/SearchBar';
-import ContinueReading from '../components/quran/ContinueReading';
-import BookmarkButton from '../components/quran/BookmarkButton';
-import { useQuran } from '../context/QuranContext';
-import { useLanguage } from '../context/LanguageContext';
-import { getSurahName, getSurahMeaning } from '../i18n/content';
+import React, { useMemo, useState } from "react";
+import { Link } from "react-router-dom";
+import LoadingSpinner from "../components/ui/LoadingSpinner";
+import ErrorBanner from "../components/ui/ErrorBanner";
+import SearchBar from "../components/ui/SearchBar";
+import ContinueReading from "../components/quran/ContinueReading";
+import BookmarkButton from "../components/quran/BookmarkButton";
+import { useQuran } from "../context/QuranContext";
+import { useLanguage } from "../context/LanguageContext";
+import { getSurahName, getSurahMeaning } from "../i18n/content";
+import qurankareem from "../assets/images/qurankareem.png";
 
 function matchesSearch(surah, num, query) {
   const q = query.trim().toLowerCase();
@@ -25,10 +25,16 @@ function matchesSearch(surah, num, query) {
 }
 
 function Home() {
-  const { surahList, listLoading, listError, bookmarks, getSurahMeta, goToSurah } =
-    useQuran();
+  const {
+    surahList,
+    listLoading,
+    listError,
+    bookmarks,
+    getSurahMeta,
+    goToSurah,
+  } = useQuran();
   const { t, lang } = useLanguage();
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
 
   const filtered = useMemo(() => {
     if (!surahList) return [];
@@ -43,7 +49,7 @@ function Home() {
         num,
         meta: getSurahMeta(num),
       })),
-    [bookmarks, getSurahMeta]
+    [bookmarks, getSurahMeta],
   );
 
   return (
@@ -53,13 +59,13 @@ function Home() {
           <img
             className="paner mb-6"
             src={qurankareem}
-            alt={t('content.quranImage')}
+            alt={t("content.quranImage")}
           />
           <h1 className="text-2xl font-bold text-white sm:text-4xl">
-            {t('home.heroTitle')}
+            {t("home.heroTitle")}
           </h1>
           <p className="mt-3 max-w-lg text-sm text-white/80 sm:text-base">
-            {t('home.heroSubtitle')}
+            {t("home.heroSubtitle")}
           </p>
         </div>
       </section>
@@ -69,7 +75,7 @@ function Home() {
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         {bookmarkedSurahs.length > 0 && (
           <section className="mb-10">
-            <p className="section-label mb-2">{t('bookmarks.label')}</p>
+            <p className="section-label mb-2">{t("bookmarks.label")}</p>
             <div className="flex flex-wrap gap-2">
               {bookmarkedSurahs.map(({ num, meta }) => (
                 <Link
@@ -78,8 +84,8 @@ function Home() {
                   onClick={() => goToSurah(num)}
                   className="rounded-full border border-quran-goldSoft bg-quran-goldLight px-4 py-2 text-sm font-bold text-quran-deep transition hover:bg-quran-gold hover:text-white"
                 >
-                  {num}.{' '}
-                  {getSurahName(meta, lang) || `${t('surah.label')} ${num}`}
+                  {num}.{" "}
+                  {getSurahName(meta, lang) || `${t("surah.label")} ${num}`}
                 </Link>
               ))}
             </div>
@@ -88,15 +94,13 @@ function Home() {
 
         <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div className="text-start">
-            <p className="section-label">{t('home.browse')}</p>
+            <p className="section-label">{t("home.browse")}</p>
             <h2 className="text-2xl font-bold text-quran-navy">
-              {t('home.allSurahs')}
+              {t("home.allSurahs")}
             </h2>
           </div>
           <span className="shrink-0 rounded-full bg-quran-mintSoft px-3 py-1 text-sm font-bold text-quran-primary">
-            {listLoading
-              ? '…'
-              : t('home.shown', { count: filtered.length })}
+            {listLoading ? "…" : t("home.shown", { count: filtered.length })}
           </span>
         </div>
 
@@ -104,17 +108,17 @@ function Home() {
           <SearchBar
             value={search}
             onChange={setSearch}
-            placeholder={t('home.searchPlaceholder')}
+            placeholder={t("home.searchPlaceholder")}
           />
         </div>
 
         <ErrorBanner message={listError} />
 
         {listLoading ? (
-          <LoadingSpinner label={t('loading')} />
+          <LoadingSpinner label={t("loading")} />
         ) : filtered.length === 0 ? (
           <p className="py-12 text-center text-quran-muted">
-            {t('home.noResults', { query: search })}
+            {t("home.noResults", { query: search })}
           </p>
         ) : (
           <div className="grid gap-3 pb-8 sm:grid-cols-2 lg:grid-cols-3">
@@ -125,14 +129,11 @@ function Home() {
                 onClick={() => goToSurah(name.num)}
                 className="block no-underline"
               >
-                <div
-                  className="surah-card group"
-                  title={t('home.openSurah')}
-                >
+                <div className="surah-card group" title={t("home.openSurah")}>
                   <div className="flex min-w-0 items-center gap-3">
                     <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-quran-primary text-lg font-bold text-white shadow-sm transition-transform group-hover:scale-105">
                       {name.num.toLocaleString(
-                        lang === 'ar' ? 'ar-u-nu-arab' : 'en'
+                        lang === "ar" ? "ar-u-nu-arab" : "en",
                       )}
                     </div>
                     <div className="min-w-0 text-start">
@@ -150,7 +151,7 @@ function Home() {
                         {name.asma.ar.long}
                       </p>
                       <p className="text-xs font-medium text-quran-muted">
-                        {t('home.ayahs', { count: name.ayahCount })}
+                        {t("home.ayahs", { count: name.ayahCount })}
                       </p>
                     </div>
                     <BookmarkButton surahNumber={name.num} />
