@@ -1,7 +1,7 @@
 export const translations = {
   en: {
     appName: 'Quran Kareem',
-    nav: { home: 'Home', read: 'Read' },
+    nav: { home: 'Home', read: 'Read', mobile: 'Main navigation' },
     lang: { en: 'EN', ar: 'AR', switch: 'Language' },
     home: {
       heroTitle: 'Read & Listen to the Holy Quran',
@@ -45,6 +45,7 @@ export const translations = {
       selectAyahPlayN: 'Play from ayah {{n}}',
       startFromAyah: 'Playing from ayah {{n}}',
       pageNav: 'Mushaf page {{current}} of {{total}}',
+      mobileActions: 'Reader actions',
     },
     surah: {
       label: 'Surah',
@@ -103,7 +104,7 @@ export const translations = {
   },
   ar: {
     appName: 'القرآن الكريم',
-    nav: { home: 'الرئيسية', read: 'قراءة' },
+    nav: { home: 'الرئيسية', read: 'قراءة', mobile: 'التنقل الرئيسي' },
     lang: { en: 'EN', ar: 'عربي', switch: 'اللغة' },
     home: {
       heroTitle: 'اقرأ واستمع إلى القرآن الكريم',
@@ -147,6 +148,7 @@ export const translations = {
       selectAyahPlayN: 'تشغيل من الآية {{n}}',
       startFromAyah: 'التشغيل من الآية {{n}}',
       pageNav: 'صفحة المصحف {{current}} من {{total}}',
+      mobileActions: 'إجراءات القراءة',
     },
     surah: {
       label: 'سورة',

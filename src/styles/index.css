@@ -94,11 +94,63 @@
   }
 
   .reader-header-toolbar {
-    @apply border-t border-quran-border bg-quran-surface px-4 py-4 sm:px-6;
+    @apply border-t border-quran-border bg-quran-surface px-4 py-3 sm:px-6 md:py-4;
+  }
+
+  /* Mobile reader — fixed bottom action dock */
+  .reader-mobile-dock {
+    @apply fixed inset-x-0 bottom-0 z-50 flex items-stretch justify-center gap-2 border-t border-quran-border/70 px-3 py-2;
+    padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
+    background-color: rgba(255, 255, 255, 0.88);
+    -webkit-backdrop-filter: blur(20px) saturate(1.35);
+    backdrop-filter: blur(20px) saturate(1.35);
+    box-shadow: 0 -4px 24px rgba(64, 103, 77, 0.1);
+  }
+
+  .reader-mobile-dock-btn {
+    @apply flex min-h-[3.25rem] flex-1 flex-col items-center justify-center gap-1 rounded-2xl px-2 py-2 text-[11px] font-bold leading-tight text-quran-primary transition active:scale-[0.98];
+  }
+
+  .reader-mobile-dock-btn--listen {
+    @apply bg-quran-mintSoft text-quran-primary;
+  }
+
+  .reader-mobile-dock-btn-active {
+    @apply bg-quran-goldLight text-quran-deep;
+  }
+
+  /* Mobile app — bottom tab navigation (home / read) */
+  .mobile-bottom-nav {
+    @apply fixed inset-x-0 bottom-0 z-50 grid grid-cols-2 border-t border-quran-border/70;
+    padding-bottom: env(safe-area-inset-bottom);
+    background-color: rgba(255, 255, 255, 0.92);
+    -webkit-backdrop-filter: blur(20px) saturate(1.35);
+    backdrop-filter: blur(20px) saturate(1.35);
+    box-shadow: 0 -4px 24px rgba(64, 103, 77, 0.1);
+  }
+
+  .mobile-tab {
+    @apply flex flex-col items-center justify-center gap-1 py-2.5 text-[11px] font-bold text-quran-muted transition;
+  }
+
+  .mobile-tab-active {
+    @apply bg-quran-mintSoft text-quran-primary;
+  }
+
+  .app-shell--mobile-nav {
+    padding-bottom: calc(4.25rem + env(safe-area-inset-bottom));
+  }
+
+  .app-shell--mobile-nav footer {
+    margin-bottom: 0;
+  }
+
+  .reader-page--mobile-dock {
+    padding-bottom: calc(5.5rem + env(safe-area-inset-bottom));
   }
 
   .reader-surah-badge {
-    @apply flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-quran-goldSoft text-sm font-bold text-quran-gold;
+    @apply flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-quran-goldSoft text-xs font-bold text-quran-gold md:h-12 md:w-12 md:text-sm;
   }
 
   .reader-mode-pill {
@@ -213,6 +265,14 @@
 
   .reader-page-nav {
     @apply rounded-2xl border border-quran-border bg-quran-surface;
+  }
+
+  @media (max-width: 767px) {
+    .reader-page-nav--sticky {
+      position: sticky;
+      bottom: calc(5.25rem + env(safe-area-inset-bottom));
+      z-index: 30;
+    }
   }
 
   .audio-control-btn {

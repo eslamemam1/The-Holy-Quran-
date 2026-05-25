@@ -224,7 +224,7 @@ export function SurahReaderLayout() {
   }
 
   return (
-    <div className="reader-page min-h-screen bg-quran-cream pb-16">
+    <div className="reader-page reader-page--mobile-dock min-h-screen bg-quran-cream md:pb-16">
       <SurahReaderHeader
         surah={surah}
         data={data}

@@ -1,5 +1,5 @@
 import './App.css';
-import { Routes, Route, Navigate, useParams } from 'react-router-dom';
+import { Routes, Route, Navigate, useParams, useLocation } from 'react-router-dom';
 import Home from '../pages/Home';
 import {
   SurahReaderLayout,
@@ -7,6 +7,7 @@ import {
   SurahVerseRoute,
 } from '../pages/SurahReader';
 import Navbar from '../components/layout/Navbar';
+import MobileBottomNav from '../components/layout/MobileBottomNav';
 import Footer from '../components/layout/Footer';
 import ScrollToTop from '../components/layout/ScrollToTop';
 import { QuranProvider, useQuran } from '../context/QuranContext';
@@ -62,8 +63,13 @@ function LegacyRedirects() {
 }
 
 function AppRoutes() {
+  const location = useLocation();
+  const isReaderRoute = location.pathname.startsWith('/surah/');
+
   return (
-    <div className="App flex min-h-screen flex-col bg-quran-cream">
+    <div
+      className={`App flex min-h-screen flex-col bg-quran-cream${isReaderRoute ? '' : ' app-shell--mobile-nav md:pb-0'}`}
+    >
       <ScrollToTop />
       <Navbar />
       <main className="flex-1">
@@ -94,6 +100,7 @@ function AppRoutes() {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
+      {!isReaderRoute && <MobileBottomNav />}
       <Footer />
     </div>
   );

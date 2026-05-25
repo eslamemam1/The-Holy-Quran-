@@ -15,9 +15,9 @@ const LanguageContext = createContext(null);
 function getStoredLang() {
   try {
     const v = localStorage.getItem(STORAGE_KEY);
-    return v === 'ar' || v === 'en' ? v : 'en';
+    return v === 'ar' || v === 'en' ? v : 'ar';
   } catch {
-    return 'en';
+    return 'ar';
   }
 }
 

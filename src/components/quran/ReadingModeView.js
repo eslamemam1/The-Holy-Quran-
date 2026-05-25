@@ -147,7 +147,7 @@ export default function ReadingModeView({
 
       {totalPages > 1 && (
         <nav
-          className="reader-page-nav mt-8 flex flex-wrap items-center justify-center gap-2 rounded-xl border border-quran-border/80 bg-white/90 px-4 py-4 backdrop-blur-sm"
+          className="reader-page-nav reader-page-nav--sticky mt-8 flex flex-wrap items-center justify-center gap-2 rounded-xl border border-quran-border/80 bg-white/90 px-4 py-4 backdrop-blur-sm"
           aria-label={t('mushaf.page')}
         >
           <button

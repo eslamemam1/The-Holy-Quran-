@@ -29,20 +29,22 @@ export default function Navbar() {
             alt={t("appName")}
             className="h-9 w-9 shrink-0 rounded-xl object-contain opacity-80"
           />
-          <span className="truncate text-base font-bold text-quran-primary sm:text-lg">
+          <span className="hidden truncate text-base font-bold text-quran-primary md:inline md:text-lg">
             {t("appName")}
           </span>
         </Link>
-        <div className="flex shrink-0 items-center gap-1 sm:gap-2">
+        <div className="flex shrink-0 items-center gap-1 md:gap-2">
           <LanguageToggle />
-          <NavLink to="/" end className={navClass}>
-            <IconHome className="nav-link-icon h-[1.125rem] w-[1.125rem]" />
-            <span className="hidden sm:inline">{t("nav.home")}</span>
-          </NavLink>
-          <NavLink to={readPath} className={navClass}>
-            <IconBook className="nav-link-icon h-[1.125rem] w-[1.125rem]" />
-            <span className="hidden sm:inline">{t("nav.read")}</span>
-          </NavLink>
+          <div className="hidden md:flex md:items-center md:gap-2">
+            <NavLink to="/" end className={navClass}>
+              <IconHome className="nav-link-icon h-[1.125rem] w-[1.125rem]" />
+              <span>{t("nav.home")}</span>
+            </NavLink>
+            <NavLink to={readPath} className={navClass}>
+              <IconBook className="nav-link-icon h-[1.125rem] w-[1.125rem]" />
+              <span>{t("nav.read")}</span>
+            </NavLink>
+          </div>
         </div>
       </nav>
     </header>
