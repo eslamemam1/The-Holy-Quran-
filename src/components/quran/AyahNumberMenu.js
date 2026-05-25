@@ -8,6 +8,7 @@ export default function AyahNumberMenu({
   onToggle,
   onClose,
   onListen,
+  onListenOnly,
   onGoToAyah,
   t,
   lang,
@@ -76,6 +77,20 @@ export default function AyahNumberMenu({
               ▶
             </span>
             {t('reader.menuListen')}
+          </button>
+          <button
+            type="button"
+            role="menuitem"
+            className="reader-ayah-menu-item"
+            onClick={() => {
+              onListenOnly(ayahNum);
+              onClose();
+            }}
+          >
+            <span className="reader-ayah-menu-icon" aria-hidden>
+              ①
+            </span>
+            {t('reader.menuListenOnly')}
           </button>
           <button
             type="button"

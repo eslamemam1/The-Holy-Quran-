@@ -18,6 +18,7 @@ export default function ReadingModeView({
   activeAyahInsurah,
   selectedAyahInsurah,
   onPlayAyah,
+  onPlayAyahOnly,
   onPageChange,
 }) {
   const { t, lang } = useLanguage();
@@ -100,6 +101,7 @@ export default function ReadingModeView({
                   onToggle={() => toggleMenu(ayahNum)}
                   onClose={closeMenu}
                   onListen={onPlayAyah}
+                  onListenOnly={onPlayAyahOnly}
                   onGoToAyah={handleGoToAyah}
                   t={t}
                   lang={lang}

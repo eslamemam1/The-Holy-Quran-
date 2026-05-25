@@ -34,6 +34,7 @@ export function useReadingAyahAudio({
   const queueRef = useRef([]);
   const pageIndexRef = useRef(0);
   const autoAdvanceRef = useRef(false);
+  const singleAyahOnlyRef = useRef(false);
   const playingRef = useRef(false);
   const prevPageRef = useRef(currentPage);
   const startFromRef = useRef(startFromInsurah);
@@ -52,6 +53,7 @@ export function useReadingAyahAudio({
     }
     queueRef.current = [];
     autoAdvanceRef.current = false;
+    singleAyahOnlyRef.current = false;
     playingRef.current = false;
     setPlaying(false);
     setActiveAyahInsurah(null);
@@ -65,6 +67,13 @@ export function useReadingAyahAudio({
 
     const queue = queueRef.current;
     if (!queue.length) {
+      if (singleAyahOnlyRef.current) {
+        singleAyahOnlyRef.current = false;
+        playingRef.current = false;
+        setPlaying(false);
+        setActiveAyahInsurah(null);
+        return;
+      }
       const nextPageIndex = pageIndexRef.current + 1;
       if (nextPageIndex < totalPages) {
         autoAdvanceRef.current = true;
@@ -93,6 +102,7 @@ export function useReadingAyahAudio({
       const queue = sliceQueueFromAyah(fullQueue, fromInsurah ?? startFromRef.current);
       if (!queue.length) return false;
 
+      singleAyahOnlyRef.current = false;
       pageIndexRef.current = pageIndex;
       queueRef.current = [...queue];
       playingRef.current = true;
@@ -109,6 +119,30 @@ export function useReadingAyahAudio({
       return startPage(currentPage - 1, fromInsurah ?? startFromRef.current);
     },
     [currentPage, startPage, stop]
+  );
+
+  const playSingle = useCallback(
+    (insurah) => {
+      stop();
+      let url = null;
+      for (const page of pages) {
+        const ayah = page.ayahs?.find((a) => a.number?.insurah === insurah);
+        if (ayah) {
+          url = getAyahAudioUrl(ayah);
+          break;
+        }
+      }
+      if (!url) return false;
+
+      singleAyahOnlyRef.current = true;
+      pageIndexRef.current = currentPage - 1;
+      queueRef.current = [{ insurah, url }];
+      playingRef.current = true;
+      setPlaying(true);
+      playNextRef.current();
+      return true;
+    },
+    [pages, currentPage, stop]
   );
 
   const pause = useCallback(() => {
@@ -167,6 +201,7 @@ export function useReadingAyahAudio({
     playing,
     activeAyahInsurah,
     start,
+    playSingle,
     stop,
     pause,
     resume,

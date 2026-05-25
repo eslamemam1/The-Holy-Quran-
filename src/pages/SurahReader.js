@@ -88,6 +88,7 @@ export function SurahReaderLayout() {
     playing: readingPlaying,
     activeAyahInsurah,
     start: startReadingAudio,
+    playSingle: playSingleAyah,
     stop: stopReadingAudio,
     pause: pauseReadingAudio,
     resume: resumeReadingAudio,
@@ -106,12 +107,20 @@ export function SurahReaderLayout() {
     setSelectedAyahInsurah(first ?? null);
   }, [surah, currentPage, pages, isReadingMode]);
 
-  const handleSelectAyah = useCallback(
+  const handlePlayFromAyah = useCallback(
     (insurah) => {
       setSelectedAyahInsurah(insurah);
       startReadingAudio(insurah);
     },
     [startReadingAudio]
+  );
+
+  const handlePlayAyahOnly = useCallback(
+    (insurah) => {
+      setSelectedAyahInsurah(insurah);
+      playSingleAyah(insurah);
+    },
+    [playSingleAyah]
   );
 
   const handleSelectSurah = useCallback(
@@ -180,7 +189,8 @@ export function SurahReaderLayout() {
       goToVerse,
       activeAyahInsurah,
       selectedAyahInsurah,
-      onPlayAyah: handleSelectAyah,
+      onPlayAyah: handlePlayFromAyah,
+      onPlayAyahOnly: handlePlayAyahOnly,
     }),
     [
       surah,
@@ -192,7 +202,8 @@ export function SurahReaderLayout() {
       goToVerse,
       activeAyahInsurah,
       selectedAyahInsurah,
-      handleSelectAyah,
+      handlePlayFromAyah,
+      handlePlayAyahOnly,
     ]
   );
 
@@ -247,6 +258,7 @@ export function SurahReadingRoute() {
     activeAyahInsurah,
     selectedAyahInsurah,
     onPlayAyah,
+    onPlayAyahOnly,
   } = useReaderOutlet();
   const navigate = useNavigate();
 
@@ -303,6 +315,7 @@ export function SurahReadingRoute() {
       activeAyahInsurah={activeAyahInsurah}
       selectedAyahInsurah={selectedAyahInsurah}
       onPlayAyah={onPlayAyah}
+      onPlayAyahOnly={onPlayAyahOnly}
       onPageChange={goPage}
     />
   );
