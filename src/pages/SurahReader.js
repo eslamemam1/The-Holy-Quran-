@@ -17,6 +17,7 @@ import { clampSurah, clampAyah } from '../utils/storage';
 import { useLanguage } from '../context/LanguageContext';
 import { groupAyahsByMushafPage, clampSurahPage } from '../utils/mushaf';
 import { getSurahRecitationUrl } from '../i18n/content';
+import { useReadingAyahAudio } from '../hooks/useReadingAyahAudio';
 
 function useSurahData(surah) {
   const { loadSurah, loadingSurah, fetchError, surahCache } = useQuran();
@@ -53,44 +54,119 @@ function useSurahData(surah) {
 }
 
 export function SurahReaderLayout() {
-  const { surahId } = useParams();
+  const { surahId, pageNum } = useParams();
   const { t } = useLanguage();
   const { goToSurah, goToVerse, remember } = useQuran();
   const location = useLocation();
+  const navigate = useNavigate();
   const surah = clampSurah(surahId);
   const { quran, data, loading, fetchError } = useSurahData(surah);
 
-  const [playing, setPlaying] = useState(false);
-  const [showTranslation, setShowTranslation] = useState(true);
-  const audioRef = useRef();
-  const continueListeningRef = useRef(false);
+  const isReadingMode = location.pathname.includes('/reading');
+  const isVerseMode = location.pathname.includes('/verse/');
 
-  const stopAudio = useCallback(() => {
-    const el = audioRef.current;
+  const pages = useMemo(
+    () => groupAyahsByMushafPage(data?.ayahs ?? []),
+    [data?.ayahs]
+  );
+  const totalPages = pages.length || 1;
+  const currentPage = clampSurahPage(pageNum, totalPages);
+
+  const [playingFullSurah, setPlayingFullSurah] = useState(false);
+  const [showTranslation, setShowTranslation] = useState(true);
+  const fullSurahAudioRef = useRef();
+  const continueListeningRef = useRef(false);
+  const continueReadingAudioRef = useRef(false);
+  const [selectedAyahInsurah, setSelectedAyahInsurah] = useState(null);
+
+  const goReadingPage = useCallback(
+    (p) => {
+      const next = clampSurahPage(p, totalPages);
+      navigate(`/surah/${surah}/reading/page/${next}`);
+    },
+    [surah, totalPages, navigate]
+  );
+
+  const {
+    audioRef: readingAudioRef,
+    playing: readingPlaying,
+    activeAyahInsurah,
+    start: startReadingAudio,
+    stop: stopReadingAudio,
+    pause: pauseReadingAudio,
+    resume: resumeReadingAudio,
+  } = useReadingAyahAudio({
+    enabled: isReadingMode && !!data?.ayahs?.length,
+    pages,
+    currentPage,
+    totalPages,
+    onAdvancePage: goReadingPage,
+    startFromInsurah: selectedAyahInsurah,
+  });
+
+  useEffect(() => {
+    if (!isReadingMode || !pages.length) return;
+    const first = pages[currentPage - 1]?.ayahs?.[0]?.number?.insurah;
+    setSelectedAyahInsurah(first ?? null);
+  }, [surah, currentPage, pages, isReadingMode]);
+
+  const handleSelectAyah = useCallback(
+    (insurah) => {
+      setSelectedAyahInsurah(insurah);
+      startReadingAudio(insurah);
+    },
+    [startReadingAudio]
+  );
+
+  const stopFullSurahAudio = useCallback(() => {
+    const el = fullSurahAudioRef.current;
     if (el) {
       el.pause();
       el.currentTime = 0;
     }
-    setPlaying(false);
+    setPlayingFullSurah(false);
   }, []);
 
   const handleSelectSurah = useCallback(
     (n) => {
       const next = clampSurah(n);
       if (next === surah) return;
-      continueListeningRef.current = playing;
-      stopAudio();
-      if (location.pathname.includes('/verse/')) {
+
+      if (isReadingMode) {
+        continueReadingAudioRef.current = readingPlaying;
+        stopReadingAudio();
+      } else {
+        continueListeningRef.current = playingFullSurah;
+        stopFullSurahAudio();
+      }
+
+      if (isVerseMode) {
         goToVerse(next, 1);
       } else {
         goToSurah(next, 1);
       }
     },
-    [surah, playing, stopAudio, location.pathname, goToVerse, goToSurah]
+    [
+      surah,
+      isReadingMode,
+      isVerseMode,
+      readingPlaying,
+      stopReadingAudio,
+      playingFullSurah,
+      stopFullSurahAudio,
+      goToVerse,
+      goToSurah,
+    ]
   );
 
   useEffect(() => {
-    const el = audioRef.current;
+    if (isReadingMode) {
+      stopFullSurahAudio();
+      return;
+    }
+    stopReadingAudio();
+
+    const el = fullSurahAudioRef.current;
     const src = getSurahRecitationUrl(data);
     if (!el || !src) return;
 
@@ -98,15 +174,43 @@ export function SurahReaderLayout() {
       continueListeningRef.current = false;
       el.load();
       el.play()
-        .then(() => setPlaying(true))
-        .catch(() => setPlaying(false));
+        .then(() => setPlayingFullSurah(true))
+        .catch(() => setPlayingFullSurah(false));
       return;
     }
 
     el.pause();
     el.currentTime = 0;
-    setPlaying(false);
-  }, [surah, data?.recitation?.full]);
+    setPlayingFullSurah(false);
+  }, [surah, data, isReadingMode, stopFullSurahAudio, stopReadingAudio]);
+
+  useEffect(() => {
+    if (!isReadingMode || !data?.ayahs?.length) return;
+    if (continueReadingAudioRef.current) {
+      continueReadingAudioRef.current = false;
+      startReadingAudio();
+    }
+  }, [surah, data?.ayahs, isReadingMode, startReadingAudio]);
+
+  const playing = isReadingMode ? readingPlaying : playingFullSurah;
+
+  const handlePlay = () => {
+    if (isReadingMode) {
+      if (readingPlaying) resumeReadingAudio();
+      else startReadingAudio(selectedAyahInsurah);
+    } else {
+      fullSurahAudioRef.current?.play();
+      setPlayingFullSurah(true);
+    }
+  };
+
+  const handlePause = () => {
+    if (isReadingMode) pauseReadingAudio();
+    else {
+      fullSurahAudioRef.current?.pause();
+      setPlayingFullSurah(false);
+    }
+  };
 
   const outletContext = useMemo(
     () => ({
@@ -117,8 +221,22 @@ export function SurahReaderLayout() {
       remember,
       goToSurah,
       goToVerse,
+      activeAyahInsurah,
+      selectedAyahInsurah,
+      onSelectAyah: handleSelectAyah,
     }),
-    [surah, quran, data, showTranslation, remember, goToSurah, goToVerse]
+    [
+      surah,
+      quran,
+      data,
+      showTranslation,
+      remember,
+      goToSurah,
+      goToVerse,
+      activeAyahInsurah,
+      selectedAyahInsurah,
+      handleSelectAyah,
+    ]
   );
 
   if (loading) {
@@ -143,24 +261,23 @@ export function SurahReaderLayout() {
         surah={surah}
         data={data}
         playing={playing}
+        listenMode={isReadingMode ? 'page' : 'surah'}
         showTranslation={showTranslation}
         onToggleTranslation={() => setShowTranslation((v) => !v)}
-        onPlay={() => {
-          audioRef.current?.play();
-          setPlaying(true);
-        }}
-        onPause={() => {
-          audioRef.current?.pause();
-          setPlaying(false);
-        }}
+        onPlay={handlePlay}
+        onPause={handlePause}
         onSelectSurah={handleSelectSurah}
       />
-      <audio
-        ref={audioRef}
-        src={getSurahRecitationUrl(data)}
-        className="hidden"
-        onEnded={() => setPlaying(false)}
-      />
+      {isReadingMode ? (
+        <audio ref={readingAudioRef} className="hidden" preload="auto" />
+      ) : (
+        <audio
+          ref={fullSurahAudioRef}
+          src={getSurahRecitationUrl(data)}
+          className="hidden"
+          onEnded={() => setPlayingFullSurah(false)}
+        />
+      )}
       <Outlet context={outletContext} />
     </div>
   );
@@ -172,7 +289,15 @@ export function useReaderOutlet() {
 
 export function SurahReadingRoute() {
   const { pageNum } = useParams();
-  const { surah, data, showTranslation, remember } = useReaderOutlet();
+  const {
+    surah,
+    data,
+    showTranslation,
+    remember,
+    activeAyahInsurah,
+    selectedAyahInsurah,
+    onSelectAyah,
+  } = useReaderOutlet();
   const navigate = useNavigate();
 
   const pages = useMemo(() => groupAyahsByMushafPage(data.ayahs), [data.ayahs]);
@@ -225,6 +350,9 @@ export function SurahReadingRoute() {
       pageNum={currentPage}
       totalPages={totalPages}
       showTranslation={showTranslation}
+      activeAyahInsurah={activeAyahInsurah}
+      selectedAyahInsurah={selectedAyahInsurah}
+      onSelectAyah={onSelectAyah}
       onPageChange={goPage}
     />
   );

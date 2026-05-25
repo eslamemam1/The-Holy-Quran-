@@ -14,6 +14,9 @@ export default function ReadingModeView({
   pageNum,
   totalPages,
   showTranslation,
+  activeAyahInsurah,
+  selectedAyahInsurah,
+  onSelectAyah,
   onPageChange,
 }) {
   const { t, lang } = useLanguage();
@@ -28,6 +31,10 @@ export default function ReadingModeView({
 
   return (
     <div className="reader-reading-wrap mx-auto max-w-3xl px-4 py-6 sm:px-6">
+      <p className="reader-select-ayah-hint mb-4 text-center text-xs text-quran-muted">
+        {t('reader.selectAyahHint')}
+      </p>
+
       <div className="reader-reading-panel">
         {pageNum === 1 && showBismillah(surah) && getPreBismillahArabic(data) && (
           <div className="reader-bismillah-block mb-6 text-center">
@@ -54,19 +61,37 @@ export default function ReadingModeView({
             const globalIndex = data.ayahs.findIndex(
               (a) => a.number?.insurah === ayah.number?.insurah
             );
+            const isPlaying =
+              activeAyahInsurah != null && ayahNum === activeAyahInsurah;
+            const isSelected =
+              selectedAyahInsurah != null && ayahNum === selectedAyahInsurah;
+            let stateClass = '';
+            if (isPlaying) stateClass = ' reader-ayah-inline--active';
+            else if (isSelected) stateClass = ' reader-ayah-inline--selected';
+
             return (
               <span
                 key={ayah.number?.inquran ?? globalIndex}
-                className="reader-ayah-inline"
+                className={`reader-ayah-inline${stateClass}`}
               >
                 <span className="reader-ayah-words">{ayah.text.ar}</span>
-                <Link
-                  to={`/surah/${surah}/verse/${ayahNum}`}
+                <button
+                  type="button"
                   className="reader-ayah-num"
-                  title={t('reader.verseByVerse')}
-                  aria-label={`${t('ayah.label')} ${ayahNum}`}
+                  title={t('reader.selectAyahPlay')}
+                  aria-label={t('reader.selectAyahPlayN', { n: ayahNum })}
+                  aria-pressed={isSelected || isPlaying}
+                  onClick={() => onSelectAyah(ayahNum)}
                 >
                   {ayahNum.toLocaleString('ar-u-nu-arab')}
+                </button>
+                <Link
+                  to={`/surah/${surah}/verse/${ayahNum}`}
+                  className="reader-ayah-open"
+                  title={t('reader.verseByVerse')}
+                  aria-label={`${t('ayah.focus')} ${ayahNum}`}
+                >
+                  ↗
                 </Link>
                 {'\u00A0'}
               </span>
@@ -81,8 +106,22 @@ export default function ReadingModeView({
           >
             {pageAyahs.map((ayah, i) => {
               const ayahNum = ayah.number?.insurah ?? i + 1;
+              const isSelected =
+                selectedAyahInsurah != null && ayahNum === selectedAyahInsurah;
               return (
-                <p key={`tr-${ayah.number?.inquran ?? i}`} className="reader-translation-line">
+                <p
+                  key={`tr-${ayah.number?.inquran ?? i}`}
+                  className={`reader-translation-line${isSelected ? ' reader-translation-line--selected' : ''}`}
+                  onClick={() => onSelectAyah(ayahNum)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      onSelectAyah(ayahNum);
+                    }
+                  }}
+                  role="button"
+                  tabIndex={0}
+                >
                   <span className="reader-translation-num">{ayahNum}. </span>
                   {getAyahTranslation(ayah, lang)}
                 </p>
@@ -108,6 +147,13 @@ export default function ReadingModeView({
           <span className="px-3 text-sm font-medium text-quran-muted">
             {t('reader.pageNav', { current: pageNum, total: totalPages })}
             {mushafPage ? ` · ${t('mushaf.mushafPage', { page: mushafPage })}` : ''}
+            {(activeAyahInsurah ?? selectedAyahInsurah) != null && (
+              <span className="block text-xs text-quran-primary sm:inline sm:before:content-['·'] sm:before:mx-1">
+                {t('reader.startFromAyah', {
+                  n: activeAyahInsurah ?? selectedAyahInsurah,
+                })}
+              </span>
+            )}
           </span>
           <button
             type="button"

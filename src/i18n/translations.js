@@ -34,6 +34,11 @@ export const translations = {
       translation: 'Translation',
       stop: 'Stop',
       surahInfo: 'Surah info',
+      listenPageHint: 'Ayah by ayah · auto page',
+      selectAyahHint: 'Tap an ayah number to play from that ayah',
+      selectAyahPlay: 'Play from this ayah',
+      selectAyahPlayN: 'Play from ayah {{n}}',
+      startFromAyah: 'Playing from ayah {{n}}',
       pageNav: 'Mushaf page {{current}} of {{total}}',
     },
     surah: {
@@ -126,6 +131,11 @@ export const translations = {
       translation: 'الترجمة',
       stop: 'إيقاف',
       surahInfo: 'معلومات السورة',
+      listenPageHint: 'آية بآية · تقليب تلقائي',
+      selectAyahHint: 'اضغط رقم الآية للتشغيل من هذه الآية',
+      selectAyahPlay: 'تشغيل من هذه الآية',
+      selectAyahPlayN: 'تشغيل من الآية {{n}}',
+      startFromAyah: 'التشغيل من الآية {{n}}',
       pageNav: 'صفحة المصحف {{current}} من {{total}}',
     },
     surah: {
