@@ -1,123 +1,137 @@
-/* eslint-disable react-hooks/rules-of-hooks */
-/* eslint-disable jsx-a11y/alt-text */
-/* eslint-disable no-unused-expressions */
-import { useState,useRef } from 'react';
-import numberAyah from './ayahNumber.png'
-import playbutton2 from "./play.png"
-import stopbutton2 from "./stop.png"
-function ayah(props) {
-  // eslint-disable-next-line react-hooks/rules-of-hooks
+import { useState, useRef } from 'react';
+import numberAyah from './ayahNumber.png';
+import LoadingSpinner from './components/LoadingSpinner';
+import AudioControl from './components/AudioControl';
+
+function Ayah(props) {
   const [counterforaya, setCounter] = useState(0);
+  const [playing, setPlaying] = useState(false);
+  const currentAudio = useRef();
+
+  const ayahCount = props.quran?.data?.ayahs?.length ?? 0;
+
   const nextAyah = () => {
-    setCounter(counterforaya + 1);
-    if (props.loading ? "Londing....." : props.quran.data.ayahs.length - 1 <= counterforaya)
-    {
-      setCounter(0);
-    }
-  }
+    setCounter((c) => (c < ayahCount - 1 ? c + 1 : 0));
+  };
+
   const previousAyah = () => {
-    setCounter(counterforaya - 1);
-    if (counterforaya === 0)
-    {
-      setCounter(0);
-    }
-  }
-  const [playing, setPLaying] = useState(false);
+    setCounter((c) => (c > 0 ? c - 1 : 0));
+  };
 
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const curentAudio = useRef();
-  (props.loading ? "Londing....." : props.quran.data.recitation.full)
   const play = () => {
-    curentAudio.current.play();
-    setPLaying(true);
-  }
+    currentAudio.current?.play();
+    setPlaying(true);
+  };
+
   const pause = () => {
-    curentAudio.current.pause();
-    setPLaying(false);
+    currentAudio.current?.pause();
+    setPlaying(false);
+  };
+
+  const onAudioEnded = () => setPlaying(false);
+
+  const resetAyah = () => setCounter(0);
+
+  if (props.loading) {
+    return (
+      <div className="bg min-h-[60vh]">
+        <LoadingSpinner label="Loading ayah..." />
+      </div>
+    );
   }
 
-  let e = () => {
-    setPLaying(false)
-  }
-
- // let rev = document.getElementById('rev');
- // let next = document.getElementById('next');
-
-  let revf = ()=> {
-    setCounter(0);
-  }
-  let nextf = ()=> {
-    setCounter(0);
-  }
-
- // const rev1 = useRef();
-  //const next1 = useRef();
-  //const rev = rev1.current;
-  //const next = next1.current;
-
-  //props.loading ? "Londing....." :rev.addEventListener('click', revf);
-  //props.loading ? "Londing....." :next.addEventListener('click', nextf);
+  const { data } = props.quran;
+  const currentAyah = data.ayahs[counterforaya];
 
   return (
-    <div className=' bg h-[91vh]'>
-    <div className=' container w-4/5 pt-10 m-auto'>
-      <div className='flex justify-between mt-2 mb-2'>
-          <button id='rev' className=' rounded-md font-semibold text-xl p-2 text-white bg-[#151f64]' onClick={() => {[ props.Previous(), revf()] }}>السورة السابقة</button>
-          <button id='next' className=' rounded-md font-semibold text-xl p-2 text-white bg-[#151f64]' onClick={() => { [props.next(), nextf()] }}>السورة التالية</button>
+    <div className="bg min-h-[70vh] pb-12">
+      <div className="mx-auto max-w-3xl px-4 pt-8 sm:px-6">
+        <div className="mb-6 flex flex-wrap gap-2 sm:justify-between">
+          <button
+            type="button"
+            className="btn-primary font-arabic text-base"
+            onClick={() => {
+              props.Previous();
+              resetAyah();
+            }}
+            disabled={props.counter <= 1}
+          >
+            السورة السابقة
+          </button>
+          <button
+            type="button"
+            className="btn-primary font-arabic text-base"
+            onClick={() => {
+              props.next();
+              resetAyah();
+            }}
+            disabled={props.counter >= 114}
+          >
+            السورة التالية
+          </button>
         </div>
-              <div className='flex justify-between mt-10 '>
-      <button className=' rounded-md font-semibold text-xl p-2 text-white bg-[#151f64]' onClick={previousAyah}>Previous Ayah</button>
-      <button className=' rounded-md font-semibold text-xl p-2 text-white bg-[#151f64]' onClick={nextAyah}>Next Ayah</button>
-      </div>
-      <div className=' text-center font-semibold text-2xl'>
-      <h1 className=' m-5 font'>
-        {props.loading === false && props.quran.data.asma.ar.long}
-        </h1>
-        {/* ayah */}
-        {props.loading === false && console.log(counterforaya)}
-        {props.loading === false && console.log(props.quran.data.ayahs.length-1)}
-        <div className=' flex justify-between'>
+
+        <div className="ayah-card mb-6 text-center">
+          <p className="section-label mb-1">
+            Surah {props.counter} · Ayah {counterforaya + 1} of {ayahCount}
+          </p>
+          <h1 className="arabic-text text-3xl">{data.asma.ar.long}</h1>
+        </div>
+
+        <div className="mb-6 flex flex-wrap justify-center gap-3">
+          <button type="button" className="btn-outline" onClick={previousAyah}>
+            ← Previous Ayah
+          </button>
+          <button type="button" className="btn-outline" onClick={nextAyah}>
+            Next Ayah →
+          </button>
+        </div>
+
+        <article className="ayah-card">
+          <div className="mb-6 flex items-start justify-between gap-4">
+            <AudioControl playing={playing} onPlay={play} onPause={pause} />
+            <audio
+              onEnded={onAudioEnded}
+              src={currentAyah.audio.url}
+              ref={currentAudio}
+              className="hidden"
+            />
+            <div className="flex flex-1 flex-row-reverse items-start gap-3">
+              <div className="relative shrink-0">
+                <img
+                  src={numberAyah}
+                  alt=""
+                  className="h-10 w-8"
+                  aria-hidden
+                />
+                <span className="absolute inset-0 flex items-center justify-center text-xs font-bold text-quran-primary">
+                  {(counterforaya + 1).toLocaleString('ar-u-nu-arab')}
+                </span>
+              </div>
+              <p className="arabic-text flex-1 text-3xl sm:text-4xl leading-loose">
+                {currentAyah.text.ar}
+              </p>
+            </div>
+          </div>
+
+          <div className="space-y-5 border-t border-slate-100 pt-5">
             <div>
-          <audio onEnded={e} src={(props.loading ? "Londing....." : props.quran.data.ayahs[counterforaya].audio.url)} ref={curentAudio} />
-          {playing ? <button className=' ml-2 w-7 h-7' ><img src={stopbutton2} onClick={pause} /></button>
-            : <button className=' ml-2 w-7 h-7'><img src={playbutton2} onClick={play} /></button>}
-        </div>
-          <div className=' flex justify-around'>
-            <div className='relative w-7 h-10 mr-2'>
-            <img src={numberAyah} alt="" className='w-7 h-10 absolute  ' />
-            <p className=' absolute text-center w-7 h-10 text-sm mt-2'>{(counterforaya + 1).toLocaleString('ar-u-nu-arab')}</p>
+              <p className="section-label mb-2">Translation</p>
+              <p className="text-lg leading-relaxed text-slate-700">
+                {currentAyah.text.read}
+              </p>
+            </div>
+            <div>
+              <p className="section-label mb-2">Tafsir</p>
+              <p className="text-lg leading-relaxed text-slate-600">
+                {currentAyah.translation.en}
+              </p>
+            </div>
           </div>
-          <div>
-          <h1 className='font'>
-        {props.loading === false && props.quran.data.ayahs[`${counterforaya}`].text.ar}
-        </h1>
-          </div>
-          </div>
-        </div>
-        <div className=' pt-5'>
-          <div className=' flex flex-col items-start'>
-            <p className=' font-light sm:text-xl'>
-            -translation
-            </p>
-            <p className=' text-base sm:text-xl'>
-              {props.loading === false && props.quran.data.ayahs[counterforaya].text.read}
-            </p>
-          </div>
-          <div className='flex flex-col items-start'>
-            <p className=' font-light sm:text-x'>
-            -tafsir
-            </p>
-            <p className=' text-base sm:text-x'>
-              {props.loading === false && props.quran.data.ayahs[counterforaya].translation.en}
-              {props.loading === false && console.log(props.quran.data.ayahs[counterforaya].audio.url)}
-            </p>
-          </div>
-        </div>
-        </div>
+        </article>
       </div>
-      
     </div>
-  )
+  );
 }
 
-export default ayah
+export default Ayah;

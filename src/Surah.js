@@ -1,104 +1,126 @@
-/* eslint-disable no-unused-expressions */
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable jsx-a11y/alt-text */
-/* eslint-disable jsx-a11y/img-redundant-alt */
-import image from './473.png'
-import numberAyah from './ayahNumber.png'
-import playbutton from "./play.png"
-import stopbutton from "./stop.png"
-import { useState, useRef } from 'react'
-import Play from './Play'
+import image from './473.png';
+import numberAyah from './ayahNumber.png';
+import { useState, useRef } from 'react';
+import Play from './Play';
+import LoadingSpinner from './components/LoadingSpinner';
+import ErrorBanner from './components/ErrorBanner';
+import AudioControl from './components/AudioControl';
+
 const Surah = (props) => {
+  const [playing, setPlaying] = useState(false);
+  const currentAudio = useRef();
 
-  // eslint-disable-next-line no-lone-blocks, no-unused-expressions
-  const [playing, setPLaying] = useState(false);
-
-  const curentAudio = useRef();
-  // eslint-disable-next-line use-isnan
-  if (props.loading ? "Londing....." : props.quran.data.recitation.full === undefined)
-  {
-    props.setCounter(1)
+  if (
+    !props.loading &&
+    props.quran?.data?.recitation?.full === undefined
+  ) {
+    props.setCounter(1);
   }
-  (props.loading ? "Londing....." : props.quran.data.recitation.full)
+
   const play = () => {
-    curentAudio.current.play();
-    setPLaying(true);
-  }
+    currentAudio.current?.play();
+    setPlaying(true);
+  };
+
   const pause = () => {
-    curentAudio.current.pause();
-      setPLaying(false);
+    currentAudio.current?.pause();
+    setPlaying(false);
+  };
+
+  if (props.loading) {
+    return (
+      <div className="bg min-h-[60vh]">
+        <LoadingSpinner label="Loading surah..." />
+      </div>
+    );
   }
+
+  const { data } = props.quran;
+
   return (
-    <div className=' bg mt-[-11px]'>
-     <div className=' container w-[80%] m-auto'>
-      <div className='theName font flex justify-center text-lg sm:text-2xl text-center p-2 w-2/4 m-auto mt-3 mb-3'>
-          <div className='' >
-            <p className=''>
-            {props.loading ? "Londing....." : props.quran.data.asma.ar.long}
-          </p>
+    <div className="bg pb-12">
+      <div className="mx-auto max-w-3xl px-4 pt-8 sm:px-6">
+        <div className="ayah-card mb-8 text-center">
+          <p className="section-label mb-2">Surah {props.counter}</p>
+          <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
+            <h1 className="arabic-text text-3xl sm:text-4xl">
+              {data.asma.ar.long}
+            </h1>
+            <AudioControl playing={playing} onPlay={play} onPause={pause} />
+            <audio src={data.recitation.full} ref={currentAudio} className="hidden" />
           </div>
-        <div>
-          <audio src={(props.loading ? "Londing....." : props.quran.data.recitation.full)} ref={curentAudio} />
-          {playing ? <button className=' ml-2 w-7 h-7' ><img src={stopbutton} onClick={pause} /></button>
-            : <button className=' ml-2 w-7 h-7'><img src={playbutton} onClick={play} /></button>}
+          <p className="mt-2 text-lg font-semibold text-quran-muted">
+            {data.asma.en.long} · {data.asma.translation.en}
+          </p>
         </div>
-      </div>
-      <div className=' flex justify-center '>
-        <div>
-          <img src={image} alt="" className='besmellah w-[65%] mb-2 m-auto'  />
+
+        <div className="mb-8 flex justify-center">
+          <img
+            src={image}
+            alt="Bismillah"
+            className="mx-auto max-w-xs opacity-90 sm:max-w-sm"
+          />
         </div>
-      </div>
-      <div>
-      {props.loading === false &&  console.log(props.quran)}
-      </div>
-      {
-        props.loading === false && props.quran.data.ayahs.map((ayahs,id) => {
-          return (
-            <div key={id}>
-              <div className='ayahs font flex justify-between mt-2 text-lg sm:text-2xl'>
-                <div className=''>
-                  <Play className='' quran={props.quran} loading={props.loading} id={id} />
-                </div>
-                <div className=' flex'>
-                <div className=' flex w-14 justify-center '>
-                  <img src={numberAyah} alt="" className='w-7 h-10 relative ' />
-                  <p className='text-xs mt-3 absolute' >{(id + 1).toLocaleString('ar-u-nu-arab')}</p>
-                </div>
-                  <div>
-                    {ayahs.text.ar}
+
+        <ErrorBanner message={props.error} />
+
+        <div className="space-y-6">
+          {data.ayahs.map((ayahs, id) => (
+            <article key={id} className="ayah-card">
+              <div className="mb-4 flex items-start justify-between gap-4">
+                <Play quran={props.quran} loading={props.loading} id={id} />
+                <div className="flex flex-1 flex-row-reverse items-start gap-3">
+                  <div className="relative shrink-0">
+                    <img
+                      src={numberAyah}
+                      alt=""
+                      className="h-10 w-8 object-contain"
+                      aria-hidden
+                    />
+                    <span className="absolute inset-0 flex items-center justify-center text-xs font-bold text-quran-primary">
+                      {(id + 1).toLocaleString('ar-u-nu-arab')}
+                    </span>
                   </div>
-                </div>
-              </div>
-              <div className=' mt-1'>
-                <div>
-                  <p className=' font-light'>
-                 - translation
-                  </p>
-                  <p className=' text-base sm:text-xl'>
-                  {ayahs.text.read}
-                  </p>
-                </div>
-                <div>
-                  <p className=' font-light'>
-                 - tafsir 
-                  </p>
-                  <p className=' text-base sm:text-xl mb-5'>
-                   {ayahs.translation.en}
+                  <p className="arabic-text flex-1 text-2xl sm:text-3xl">
+                    {ayahs.text.ar}
                   </p>
                 </div>
               </div>
-              <hr className=' border-black'></hr>
-            </div>
-              )
-      })
-      }
-      {props.error ? props.error : null}
-      <div className=' flex justify-evenly h-14 mt-4 mb-4'>
-        <button className=' border rounded-md text-xl p-2 text-white bg-[#14203f]' onClick={props.Previous}> Previous Surah </button>
-        <button className=' border rounded-md text-xl p-2 text-white bg-[#14203f]' onClick={props.next}> Next Surah</button>
+
+              <div className="space-y-4 border-t border-slate-100 pt-4">
+                <div>
+                  <p className="section-label mb-1">Translation</p>
+                  <p className="text-base leading-relaxed text-slate-700 sm:text-lg">
+                    {ayahs.text.read}
+                  </p>
+                </div>
+                <div>
+                  <p className="section-label mb-1">Tafsir</p>
+                  <p className="text-base leading-relaxed text-slate-600 sm:text-lg">
+                    {ayahs.translation.en}
+                  </p>
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+
+        <div className="mt-10 flex flex-wrap justify-center gap-3">
+          <button
+            type="button"
+            className="btn-outline"
+            onClick={props.Previous}
+            disabled={props.counter <= 1}
+          >
+            ← Previous Surah
+          </button>
+          <button type="button" className="btn-primary" onClick={props.next} disabled={props.counter >= 114}>
+            Next Surah →
+          </button>
+        </div>
       </div>
     </div>
-    </div>
-  )
-}
-export default Surah
+  );
+};
+
+export default Surah;

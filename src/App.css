@@ -1,14 +1,46 @@
-.paner{
-    width: 70%;
-    height: 70%;
+.bg {
+  background-color: #faf8f3;
+  background-image: url('./bg.png');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-blend-mode: overlay;
 }
-@font-face {
-    font-family: "myFirstFont";
-    src: local("C: \Windows\Fonts\aldhabi.ttf");
+
+.bg::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(250, 248, 243, 0.92) 0%,
+    rgba(250, 248, 243, 0.88) 100%
+  );
+  pointer-events: none;
+  z-index: 0;
 }
-.font{
-    font-family: "myFirstFont";
+
+.bg > * {
+  position: relative;
+  z-index: 1;
 }
-.bg{
-    background-image: url("./bg.png");
+
+.paner {
+  width: min(320px, 70%);
+  height: auto;
+  filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.25));
+}
+
+.hero-pattern {
+  background-color: #151f64;
+  background-image: radial-gradient(
+      circle at 20% 80%,
+      rgba(201, 162, 39, 0.15) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 80% 20%,
+      rgba(255, 255, 255, 0.08) 0%,
+      transparent 40%
+    );
 }
