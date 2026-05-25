@@ -102,17 +102,29 @@
     @apply rounded-sm bg-emerald-100/80 px-0.5;
   }
 
-  .reader-ayah-inline--selected .reader-ayah-num {
+  .reader-ayah-num-wrap {
+    @apply relative mx-0.5 inline-block align-middle;
+    vertical-align: middle;
+  }
+
+  .reader-ayah-num--selected {
     @apply bg-amber-100 text-amber-900 ring-2 ring-amber-400;
   }
 
-  .reader-ayah-inline--active .reader-ayah-num {
+  .reader-ayah-num--active {
     @apply bg-quran-primary text-white ring-2 ring-quran-primary/30;
   }
 
-  .reader-ayah-open {
-    @apply mx-0.5 inline-flex h-5 w-5 translate-y-[-2px] items-center justify-center rounded text-[0.6rem] font-bold text-quran-muted no-underline opacity-60 transition hover:bg-quran-primary/10 hover:text-quran-primary hover:opacity-100;
-    vertical-align: middle;
+  .reader-ayah-menu {
+    @apply absolute right-0 top-full z-50 mt-1 min-w-[11rem] overflow-hidden rounded-xl border border-quran-border bg-white py-1 text-left shadow-lg;
+  }
+
+  .reader-ayah-menu-item {
+    @apply flex w-full items-center gap-2 px-3 py-2.5 text-left text-sm font-medium text-quran-text transition hover:bg-quran-cream;
+  }
+
+  .reader-ayah-menu-icon {
+    @apply inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md bg-quran-primary/10 text-xs text-quran-primary;
   }
 
   .reader-select-ayah-hint {
@@ -136,8 +148,7 @@
   }
 
   .reader-ayah-num {
-    @apply mx-0.5 inline-flex h-6 min-w-[1.5rem] translate-y-[-2px] items-center justify-center rounded-full bg-emerald-100/90 px-1 text-[0.65rem] font-bold leading-none text-quran-primary no-underline transition hover:bg-quran-primary hover:text-white sm:text-xs;
-    vertical-align: middle;
+    @apply inline-flex h-6 min-w-[1.5rem] cursor-pointer items-center justify-center rounded-full border-0 bg-emerald-100/90 px-1 text-[0.65rem] font-bold leading-none text-quran-primary transition hover:bg-quran-primary hover:text-white sm:text-xs;
   }
 
   .reader-translations-block {

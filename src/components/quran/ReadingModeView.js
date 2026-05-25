@@ -1,5 +1,5 @@
-import { useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import { useMemo, useState, useCallback, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../../context/LanguageContext';
 import {
   getAyahTranslation,
@@ -7,6 +7,7 @@ import {
   getPreBismillahTranslation,
 } from '../../i18n/content';
 import { groupAyahsByMushafPage, showBismillah } from '../../utils/mushaf';
+import AyahNumberMenu from './AyahNumberMenu';
 
 export default function ReadingModeView({
   surah,
@@ -16,10 +17,12 @@ export default function ReadingModeView({
   showTranslation,
   activeAyahInsurah,
   selectedAyahInsurah,
-  onSelectAyah,
+  onPlayAyah,
   onPageChange,
 }) {
   const { t, lang } = useLanguage();
+  const navigate = useNavigate();
+  const [openMenuAyah, setOpenMenuAyah] = useState(null);
 
   const pages = useMemo(
     () => groupAyahsByMushafPage(data.ayahs),
@@ -28,6 +31,23 @@ export default function ReadingModeView({
   const pageIndex = Math.min(totalPages, Math.max(1, pageNum)) - 1;
   const pageAyahs = pages[pageIndex]?.ayahs ?? data.ayahs;
   const mushafPage = pages[pageIndex]?.mushafPage;
+
+  const closeMenu = useCallback(() => setOpenMenuAyah(null), []);
+
+  const toggleMenu = useCallback((ayahNum) => {
+    setOpenMenuAyah((prev) => (prev === ayahNum ? null : ayahNum));
+  }, []);
+
+  const handleGoToAyah = useCallback(
+    (ayahNum) => {
+      navigate(`/surah/${surah}/verse/${ayahNum}`);
+    },
+    [navigate, surah]
+  );
+
+  useEffect(() => {
+    closeMenu();
+  }, [pageNum, closeMenu]);
 
   return (
     <div className="reader-reading-wrap mx-auto max-w-3xl px-4 py-6 sm:px-6">
@@ -65,34 +85,25 @@ export default function ReadingModeView({
               activeAyahInsurah != null && ayahNum === activeAyahInsurah;
             const isSelected =
               selectedAyahInsurah != null && ayahNum === selectedAyahInsurah;
-            let stateClass = '';
-            if (isPlaying) stateClass = ' reader-ayah-inline--active';
-            else if (isSelected) stateClass = ' reader-ayah-inline--selected';
 
             return (
               <span
                 key={ayah.number?.inquran ?? globalIndex}
-                className={`reader-ayah-inline${stateClass}`}
+                className={`reader-ayah-inline${isPlaying ? ' reader-ayah-inline--active' : ''}`}
               >
                 <span className="reader-ayah-words">{ayah.text.ar}</span>
-                <button
-                  type="button"
-                  className="reader-ayah-num"
-                  title={t('reader.selectAyahPlay')}
-                  aria-label={t('reader.selectAyahPlayN', { n: ayahNum })}
-                  aria-pressed={isSelected || isPlaying}
-                  onClick={() => onSelectAyah(ayahNum)}
-                >
-                  {ayahNum.toLocaleString('ar-u-nu-arab')}
-                </button>
-                <Link
-                  to={`/surah/${surah}/verse/${ayahNum}`}
-                  className="reader-ayah-open"
-                  title={t('reader.verseByVerse')}
-                  aria-label={`${t('ayah.focus')} ${ayahNum}`}
-                >
-                  ↗
-                </Link>
+                <AyahNumberMenu
+                  ayahNum={ayahNum}
+                  isPlaying={isPlaying}
+                  isSelected={isSelected && !isPlaying}
+                  open={openMenuAyah === ayahNum}
+                  onToggle={() => toggleMenu(ayahNum)}
+                  onClose={closeMenu}
+                  onListen={onPlayAyah}
+                  onGoToAyah={handleGoToAyah}
+                  t={t}
+                  lang={lang}
+                />
                 {'\u00A0'}
               </span>
             );
@@ -106,17 +117,18 @@ export default function ReadingModeView({
           >
             {pageAyahs.map((ayah, i) => {
               const ayahNum = ayah.number?.insurah ?? i + 1;
-              const isSelected =
-                selectedAyahInsurah != null && ayahNum === selectedAyahInsurah;
+              const isHighlighted =
+                (activeAyahInsurah != null && ayahNum === activeAyahInsurah) ||
+                (selectedAyahInsurah != null && ayahNum === selectedAyahInsurah);
               return (
                 <p
                   key={`tr-${ayah.number?.inquran ?? i}`}
-                  className={`reader-translation-line${isSelected ? ' reader-translation-line--selected' : ''}`}
-                  onClick={() => onSelectAyah(ayahNum)}
+                  className={`reader-translation-line${isHighlighted ? ' reader-translation-line--selected' : ''}`}
+                  onClick={() => toggleMenu(ayahNum)}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' || e.key === ' ') {
                       e.preventDefault();
-                      onSelectAyah(ayahNum);
+                      toggleMenu(ayahNum);
                     }
                   }}
                   role="button"

@@ -13,9 +13,9 @@ import {
 export default function SurahReaderHeader({
   surah,
   data,
-  playing,
-  listenMode = 'surah',
   showTranslation,
+  showListen = false,
+  playing = false,
   onToggleTranslation,
   onPlay,
   onPause,
@@ -86,19 +86,21 @@ export default function SurahReaderHeader({
             onSelect={onSelectSurah}
             className="min-w-[200px] flex-1"
           />
-          <button
-            type="button"
-            onClick={playing ? onPause : onPlay}
-            className="reader-action-btn reader-action-btn--listen"
-          >
-            <span aria-hidden>{playing ? '⏸' : '▶'}</span>
-            <span>{playing ? t('reader.stop') : t('reader.listen')}</span>
-            {listenMode === 'page' && !playing && (
-              <span className="reader-listen-hint">
-                {t('reader.listenPageHint')}
-              </span>
-            )}
-          </button>
+          {showListen && (
+            <button
+              type="button"
+              onClick={playing ? onPause : onPlay}
+              className="reader-action-btn reader-action-btn--listen"
+            >
+              <span aria-hidden>{playing ? '⏸' : '▶'}</span>
+              <span>{playing ? t('reader.stop') : t('reader.listen')}</span>
+              {!playing && (
+                <span className="reader-listen-hint">
+                  {t('reader.listenPageHint')}
+                </span>
+              )}
+            </button>
+          )}
           <button
             type="button"
             onClick={onToggleTranslation}

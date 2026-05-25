@@ -16,7 +16,6 @@ import { useQuran } from '../context/QuranContext';
 import { clampSurah, clampAyah } from '../utils/storage';
 import { useLanguage } from '../context/LanguageContext';
 import { groupAyahsByMushafPage, clampSurahPage } from '../utils/mushaf';
-import { getSurahRecitationUrl } from '../i18n/content';
 import { useReadingAyahAudio } from '../hooks/useReadingAyahAudio';
 
 function useSurahData(surah) {
@@ -72,10 +71,7 @@ export function SurahReaderLayout() {
   const totalPages = pages.length || 1;
   const currentPage = clampSurahPage(pageNum, totalPages);
 
-  const [playingFullSurah, setPlayingFullSurah] = useState(false);
   const [showTranslation, setShowTranslation] = useState(true);
-  const fullSurahAudioRef = useRef();
-  const continueListeningRef = useRef(false);
   const continueReadingAudioRef = useRef(false);
   const [selectedAyahInsurah, setSelectedAyahInsurah] = useState(null);
 
@@ -118,15 +114,6 @@ export function SurahReaderLayout() {
     [startReadingAudio]
   );
 
-  const stopFullSurahAudio = useCallback(() => {
-    const el = fullSurahAudioRef.current;
-    if (el) {
-      el.pause();
-      el.currentTime = 0;
-    }
-    setPlayingFullSurah(false);
-  }, []);
-
   const handleSelectSurah = useCallback(
     (n) => {
       const next = clampSurah(n);
@@ -136,8 +123,7 @@ export function SurahReaderLayout() {
         continueReadingAudioRef.current = readingPlaying;
         stopReadingAudio();
       } else {
-        continueListeningRef.current = playingFullSurah;
-        stopFullSurahAudio();
+        stopReadingAudio();
       }
 
       if (isVerseMode) {
@@ -152,37 +138,14 @@ export function SurahReaderLayout() {
       isVerseMode,
       readingPlaying,
       stopReadingAudio,
-      playingFullSurah,
-      stopFullSurahAudio,
       goToVerse,
       goToSurah,
     ]
   );
 
   useEffect(() => {
-    if (isReadingMode) {
-      stopFullSurahAudio();
-      return;
-    }
-    stopReadingAudio();
-
-    const el = fullSurahAudioRef.current;
-    const src = getSurahRecitationUrl(data);
-    if (!el || !src) return;
-
-    if (continueListeningRef.current) {
-      continueListeningRef.current = false;
-      el.load();
-      el.play()
-        .then(() => setPlayingFullSurah(true))
-        .catch(() => setPlayingFullSurah(false));
-      return;
-    }
-
-    el.pause();
-    el.currentTime = 0;
-    setPlayingFullSurah(false);
-  }, [surah, data, isReadingMode, stopFullSurahAudio, stopReadingAudio]);
+    if (!isReadingMode) stopReadingAudio();
+  }, [isReadingMode, stopReadingAudio]);
 
   useEffect(() => {
     if (!isReadingMode || !data?.ayahs?.length) return;
@@ -192,25 +155,19 @@ export function SurahReaderLayout() {
     }
   }, [surah, data?.ayahs, isReadingMode, startReadingAudio]);
 
-  const playing = isReadingMode ? readingPlaying : playingFullSurah;
+  const handleReadingPlay = useCallback(() => {
+    if (readingPlaying) resumeReadingAudio();
+    else startReadingAudio(selectedAyahInsurah);
+  }, [
+    readingPlaying,
+    resumeReadingAudio,
+    startReadingAudio,
+    selectedAyahInsurah,
+  ]);
 
-  const handlePlay = () => {
-    if (isReadingMode) {
-      if (readingPlaying) resumeReadingAudio();
-      else startReadingAudio(selectedAyahInsurah);
-    } else {
-      fullSurahAudioRef.current?.play();
-      setPlayingFullSurah(true);
-    }
-  };
-
-  const handlePause = () => {
-    if (isReadingMode) pauseReadingAudio();
-    else {
-      fullSurahAudioRef.current?.pause();
-      setPlayingFullSurah(false);
-    }
-  };
+  const handleReadingPause = useCallback(() => {
+    pauseReadingAudio();
+  }, [pauseReadingAudio]);
 
   const outletContext = useMemo(
     () => ({
@@ -223,7 +180,7 @@ export function SurahReaderLayout() {
       goToVerse,
       activeAyahInsurah,
       selectedAyahInsurah,
-      onSelectAyah: handleSelectAyah,
+      onPlayAyah: handleSelectAyah,
     }),
     [
       surah,
@@ -260,23 +217,16 @@ export function SurahReaderLayout() {
       <SurahReaderHeader
         surah={surah}
         data={data}
-        playing={playing}
-        listenMode={isReadingMode ? 'page' : 'surah'}
         showTranslation={showTranslation}
+        showListen={isReadingMode}
+        playing={readingPlaying}
         onToggleTranslation={() => setShowTranslation((v) => !v)}
-        onPlay={handlePlay}
-        onPause={handlePause}
+        onPlay={handleReadingPlay}
+        onPause={handleReadingPause}
         onSelectSurah={handleSelectSurah}
       />
-      {isReadingMode ? (
+      {isReadingMode && (
         <audio ref={readingAudioRef} className="hidden" preload="auto" />
-      ) : (
-        <audio
-          ref={fullSurahAudioRef}
-          src={getSurahRecitationUrl(data)}
-          className="hidden"
-          onEnded={() => setPlayingFullSurah(false)}
-        />
       )}
       <Outlet context={outletContext} />
     </div>
@@ -296,7 +246,7 @@ export function SurahReadingRoute() {
     remember,
     activeAyahInsurah,
     selectedAyahInsurah,
-    onSelectAyah,
+    onPlayAyah,
   } = useReaderOutlet();
   const navigate = useNavigate();
 
@@ -352,7 +302,7 @@ export function SurahReadingRoute() {
       showTranslation={showTranslation}
       activeAyahInsurah={activeAyahInsurah}
       selectedAyahInsurah={selectedAyahInsurah}
-      onSelectAyah={onSelectAyah}
+      onPlayAyah={onPlayAyah}
       onPageChange={goPage}
     />
   );
