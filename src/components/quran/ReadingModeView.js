@@ -1,13 +1,11 @@
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import Play from './Play';
 import { useLanguage } from '../../context/LanguageContext';
 import { getAyahReading } from '../../i18n/content';
 import { groupAyahsByMushafPage, showBismillah } from '../../utils/mushaf';
 
 export default function ReadingModeView({
   surah,
-  quran,
   data,
   pageNum,
   totalPages,
@@ -25,51 +23,64 @@ export default function ReadingModeView({
   const mushafPage = pages[pageIndex]?.mushafPage;
 
   return (
-    <div className="reader-content mx-auto max-w-3xl px-4 py-8 sm:px-6">
-      {pageNum === 1 && showBismillah(surah) && (
-        <p
-          className="arabic-text mb-8 text-center text-2xl text-quran-text sm:text-3xl"
-          dir="rtl"
-        >
-          بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ
-        </p>
-      )}
+    <div className="reader-reading-wrap mx-auto max-w-3xl px-4 py-6 sm:px-6">
+      <div className="reader-reading-panel">
+        {pageNum === 1 && showBismillah(surah) && (
+          <p
+            className="reader-bismillah arabic-text text-center text-2xl sm:text-3xl"
+            dir="rtl"
+          >
+            بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ
+          </p>
+        )}
 
-      <div className="reader-flow" dir="rtl">
-        {pageAyahs.map((ayah) => {
-          const ayahNum = ayah.number?.insurah;
-          const globalIndex = data.ayahs.findIndex(
-            (a) => a.number?.insurah === ayahNum
-          );
-          return (
-            <div key={ayah.number?.inquran ?? globalIndex} className="reader-ayah">
-              <div className="group flex items-start gap-2">
-                <span className="reader-ayah-text arabic-text">{ayah.text.ar}</span>
+        <p className="reader-continuous arabic-text" dir="rtl">
+          {pageAyahs.map((ayah, i) => {
+            const ayahNum = ayah.number?.insurah ?? i + 1;
+            const globalIndex = data.ayahs.findIndex(
+              (a) => a.number?.insurah === ayah.number?.insurah
+            );
+            return (
+              <span
+                key={ayah.number?.inquran ?? globalIndex}
+                className="reader-ayah-inline"
+              >
+                <span className="reader-ayah-words">{ayah.text.ar}</span>
                 <Link
-                  to={`/surah/${surah}/verse/${ayahNum ?? globalIndex + 1}`}
-                  className="reader-ayah-num shrink-0"
+                  to={`/surah/${surah}/verse/${ayahNum}`}
+                  className="reader-ayah-num"
                   title={t('reader.verseByVerse')}
+                  aria-label={`${t('ayah.label')} ${ayahNum}`}
                 >
-                  {ayahNum?.toLocaleString('ar-u-nu-arab') ??
-                    (globalIndex + 1).toLocaleString('ar-u-nu-arab')}
+                  {ayahNum.toLocaleString('ar-u-nu-arab')}
                 </Link>
-              </div>
-              {showTranslation && (
-                <div className="reader-translation text-start" dir={lang === 'ar' ? 'rtl' : 'ltr'}>
-                  <p>{getAyahReading(ayah, lang)}</p>
-                </div>
-              )}
-              <div className="reader-ayah-tools opacity-0 transition group-hover:opacity-100">
-                <Play quran={quran} loading={false} id={globalIndex} />
-              </div>
-            </div>
-          );
-        })}
+                {'\u00A0'}
+              </span>
+            );
+          })}
+        </p>
+
+        {showTranslation && (
+          <div
+            className="reader-translations-block"
+            dir={lang === 'ar' ? 'rtl' : 'ltr'}
+          >
+            {pageAyahs.map((ayah, i) => {
+              const ayahNum = ayah.number?.insurah ?? i + 1;
+              return (
+                <p key={`tr-${ayah.number?.inquran ?? i}`} className="reader-translation-line">
+                  <span className="reader-translation-num">{ayahNum}. </span>
+                  {getAyahReading(ayah, lang)}
+                </p>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       {totalPages > 1 && (
         <nav
-          className="reader-page-nav mt-10 flex flex-wrap items-center justify-center gap-2 border-t border-quran-border pt-6"
+          className="reader-page-nav mt-8 flex flex-wrap items-center justify-center gap-2 rounded-xl border border-quran-border/80 bg-white/90 px-4 py-4 backdrop-blur-sm"
           aria-label={t('mushaf.page')}
         >
           <button

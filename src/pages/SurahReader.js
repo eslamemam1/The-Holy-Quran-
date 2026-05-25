@@ -3,6 +3,7 @@ import {
   useParams,
   useNavigate,
   useLocation,
+  Navigate,
   Outlet,
   useOutletContext,
 } from 'react-router-dom';
@@ -12,25 +13,35 @@ import SurahReaderHeader from '../components/quran/SurahReaderHeader';
 import ReadingModeView from '../components/quran/ReadingModeView';
 import VerseModeView from '../components/quran/VerseModeView';
 import { useQuran } from '../context/QuranContext';
-import { clampSurah } from '../utils/storage';
+import { clampSurah, clampAyah } from '../utils/storage';
 import { useLanguage } from '../context/LanguageContext';
 import { groupAyahsByMushafPage, clampSurahPage } from '../utils/mushaf';
 
 function useSurahData(surah) {
   const { loadSurah, loadingSurah, fetchError, surahCache } = useQuran();
   const [quran, setQuran] = useState(() => surahCache[surah] ?? null);
+  const cacheRef = useRef(surahCache);
+
+  cacheRef.current = surahCache;
 
   useEffect(() => {
     let active = true;
-    if (surahCache[surah]) setQuran(surahCache[surah]);
-    else setQuran(null);
+    const cached = cacheRef.current[surah];
+
+    if (cached) {
+      setQuran(cached);
+    } else {
+      setQuran(null);
+    }
+
     loadSurah(surah).then((d) => {
       if (active && d) setQuran(d);
     });
+
     return () => {
       active = false;
     };
-  }, [surah, loadSurah, surahCache]);
+  }, [surah, loadSurah]);
 
   return {
     quran,
@@ -51,6 +62,19 @@ export function SurahReaderLayout() {
   const [playing, setPlaying] = useState(false);
   const [showTranslation, setShowTranslation] = useState(true);
   const audioRef = useRef();
+
+  const outletContext = useMemo(
+    () => ({
+      surah,
+      quran,
+      data,
+      showTranslation,
+      remember,
+      goToSurah,
+      goToVerse,
+    }),
+    [surah, quran, data, showTranslation, remember, goToSurah, goToVerse]
+  );
 
   if (loading) {
     return (
@@ -96,17 +120,7 @@ export function SurahReaderLayout() {
         className="hidden"
         onEnded={() => setPlaying(false)}
       />
-      <Outlet
-        context={{
-          surah,
-          quran,
-          data,
-          showTranslation,
-          remember,
-          goToSurah,
-          goToVerse,
-        }}
-      />
+      <Outlet context={outletContext} />
     </div>
   );
 }
@@ -117,27 +131,24 @@ export function useReaderOutlet() {
 
 export function SurahReadingRoute() {
   const { pageNum } = useParams();
-  const { surah, quran, data, showTranslation, remember } = useReaderOutlet();
+  const { surah, data, showTranslation, remember } = useReaderOutlet();
   const navigate = useNavigate();
 
   const pages = useMemo(() => groupAyahsByMushafPage(data.ayahs), [data.ayahs]);
   const totalPages = pages.length || 1;
   const currentPage = clampSurahPage(pageNum, totalPages);
+  const pageMismatch =
+    pages.length > 0 && pageNum && String(currentPage) !== String(pageNum);
 
   useEffect(() => {
-    if (pages.length && pageNum && String(currentPage) !== String(pageNum)) {
-      navigate(`/surah/${surah}/reading/page/${currentPage}`, { replace: true });
-    }
-  }, [pages.length, currentPage, pageNum, surah, navigate]);
-
-  useEffect(() => {
+    if (pageMismatch) return;
     remember({
       surah,
       ayah: 1,
       view: 'reading',
       mushafPage: currentPage,
     });
-  }, [surah, currentPage, remember]);
+  }, [surah, currentPage, remember, pageMismatch]);
 
   const goPage = useCallback(
     (p) => {
@@ -157,10 +168,18 @@ export function SurahReadingRoute() {
     return () => window.removeEventListener('keydown', onKey);
   }, [currentPage, goPage]);
 
+  if (pageMismatch) {
+    return (
+      <Navigate
+        to={`/surah/${surah}/reading/page/${currentPage}`}
+        replace
+      />
+    );
+  }
+
   return (
     <ReadingModeView
       surah={surah}
-      quran={quran}
       data={data}
       pageNum={currentPage}
       totalPages={totalPages}
@@ -173,17 +192,29 @@ export function SurahReadingRoute() {
 export function SurahVerseRoute() {
   const { ayahId } = useParams();
   const { surah, quran, data, showTranslation, remember } = useReaderOutlet();
+  const ayahCount = data.ayahs.length;
+  const ayah = clampAyah(ayahId, ayahCount);
+  const ayahMismatch = String(ayah) !== String(ayahId);
+
+  useEffect(() => {
+    if (ayahMismatch) return;
+    remember({ surah, ayah, view: 'verse', mushafPage: 1 });
+  }, [surah, ayah, remember, ayahMismatch]);
+
+  if (ayahMismatch) {
+    return (
+      <Navigate to={`/surah/${surah}/verse/${ayah}`} replace />
+    );
+  }
 
   return (
     <VerseModeView
       surah={surah}
-      ayahId={ayahId}
+      ayah={ayah}
+      ayahCount={ayahCount}
       quran={quran}
       data={data}
       showTranslation={showTranslation}
-      onVerseChange={(a) =>
-        remember({ surah, ayah: a, view: 'verse', mushafPage: 1 })
-      }
     />
   );
 }

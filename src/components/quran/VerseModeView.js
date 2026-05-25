@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Play from './Play';
 import { useLanguage } from '../../context/LanguageContext';
@@ -7,32 +7,23 @@ import { clampAyah } from '../../utils/storage';
 
 export default function VerseModeView({
   surah,
-  ayahId,
+  ayah,
+  ayahCount,
   quran,
   data,
   showTranslation,
-  onVerseChange,
 }) {
   const { t, lang, isRtl } = useLanguage();
   const navigate = useNavigate();
-  const ayahCount = data.ayahs.length;
-  const ayah = clampAyah(ayahId, ayahCount);
   const ayahIndex = ayah - 1;
   const currentAyah = data.ayahs[ayahIndex];
-
-  useEffect(() => {
-    if (parseInt(ayahId, 10) !== ayah) {
-      navigate(`/surah/${surah}/verse/${ayah}`, { replace: true });
-    }
-  }, [ayahId, ayah, surah, navigate]);
 
   const goVerse = useCallback(
     (index) => {
       const n = clampAyah(index + 1, ayahCount);
-      onVerseChange(n);
       navigate(`/surah/${surah}/verse/${n}`, { replace: true });
     },
-    [surah, ayahCount, navigate, onVerseChange]
+    [surah, ayahCount, navigate]
   );
 
   useEffect(() => {
@@ -47,7 +38,9 @@ export default function VerseModeView({
     return () => window.removeEventListener('keydown', onKey);
   }, [ayahIndex, goVerse, isRtl]);
 
-  if (!currentAyah) return null;
+  if (!currentAyah) {
+    return null;
+  }
 
   return (
     <div className="reader-content mx-auto max-w-3xl px-4 py-8 sm:px-6">

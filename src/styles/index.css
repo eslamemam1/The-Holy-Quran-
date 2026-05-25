@@ -74,28 +74,45 @@
     @apply border-quran-primary bg-emerald-50 text-quran-primary;
   }
 
-  .reader-flow {
-    @apply space-y-6;
+  /* Reading mode: continuous mushaf text */
+  .reader-reading-panel {
+    @apply relative rounded-2xl border border-quran-border bg-quran-surface px-5 py-8 shadow-card sm:px-8 sm:py-10;
   }
 
-  .reader-ayah {
-    @apply relative border-b border-quran-border/60 pb-6 last:border-0;
+  .reader-bismillah {
+    @apply mb-6 text-quran-text;
   }
 
-  .reader-ayah-text {
-    @apply text-[1.65rem] leading-[2.4] sm:text-[1.85rem];
+  .reader-continuous {
+    @apply text-[1.75rem] leading-[2.6] text-quran-text sm:text-[2rem] sm:leading-[2.75];
+    text-align: justify;
+    text-align-last: center;
+    word-spacing: 0.05em;
+  }
+
+  .reader-ayah-inline {
+    @apply inline;
+  }
+
+  .reader-ayah-words {
+    @apply inline;
   }
 
   .reader-ayah-num {
-    @apply inline-flex h-7 min-w-[1.75rem] items-center justify-center rounded-full bg-emerald-100 px-1.5 text-xs font-bold text-quran-primary no-underline transition hover:bg-quran-primary hover:text-white;
+    @apply mx-0.5 inline-flex h-6 min-w-[1.5rem] translate-y-[-2px] items-center justify-center rounded-full bg-emerald-100/90 px-1 text-[0.65rem] font-bold leading-none text-quran-primary no-underline transition hover:bg-quran-primary hover:text-white sm:text-xs;
+    vertical-align: middle;
   }
 
-  .reader-translation {
-    @apply mt-3 rounded-lg bg-quran-cream px-4 py-3 text-base leading-relaxed text-quran-muted;
+  .reader-translations-block {
+    @apply mt-8 space-y-3 border-t border-quran-border/50 pt-6;
   }
 
-  .reader-ayah-tools {
-    @apply absolute left-0 top-0;
+  .reader-translation-line {
+    @apply text-base leading-relaxed text-quran-muted;
+  }
+
+  .reader-translation-num {
+    @apply font-bold text-quran-primary;
   }
 
   .reader-verse-card {
