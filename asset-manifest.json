@@ -1,17 +1,17 @@
 {
   "files": {
-    "main.css": "/The-Holy-Quran-/static/css/main.c3add842.css",
-    "main.js": "/The-Holy-Quran-/static/js/main.bd8d40d0.js",
+    "main.css": "/The-Holy-Quran-/static/css/main.a84fe3ef.css",
+    "main.js": "/The-Holy-Quran-/static/js/main.e5c4eed7.js",
     "static/js/787.1ed0c42c.chunk.js": "/The-Holy-Quran-/static/js/787.1ed0c42c.chunk.js",
     "static/media/icon.png": "/The-Holy-Quran-/static/media/icon.6e97057890fb709fb010.png",
     "static/media/qurankareem.png": "/The-Holy-Quran-/static/media/qurankareem.dc4ca743d437d79c43f5.png",
     "index.html": "/The-Holy-Quran-/index.html",
-    "main.c3add842.css.map": "/The-Holy-Quran-/static/css/main.c3add842.css.map",
-    "main.bd8d40d0.js.map": "/The-Holy-Quran-/static/js/main.bd8d40d0.js.map",
+    "main.a84fe3ef.css.map": "/The-Holy-Quran-/static/css/main.a84fe3ef.css.map",
+    "main.e5c4eed7.js.map": "/The-Holy-Quran-/static/js/main.e5c4eed7.js.map",
     "787.1ed0c42c.chunk.js.map": "/The-Holy-Quran-/static/js/787.1ed0c42c.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.c3add842.css",
-    "static/js/main.bd8d40d0.js"
+    "static/css/main.a84fe3ef.css",
+    "static/js/main.e5c4eed7.js"
   ]
 }
