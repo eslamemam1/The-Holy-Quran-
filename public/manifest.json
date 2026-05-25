@@ -5,17 +5,14 @@
     {
       "src": "qurankareem.png",
       "type": "image/png",
-      "sizes": "350x337"
+      "sizes": "350x337",
+      "purpose": "any"
     },
     {
-      "src": "logo192.png",
+      "src": "qurankareem.png",
       "type": "image/png",
-      "sizes": "192x192"
-    },
-    {
-      "src": "logo512.png",
-      "type": "image/png",
-      "sizes": "512x512"
+      "sizes": "350x337",
+      "purpose": "maskable"
     }
   ],
   "start_url": ".",
