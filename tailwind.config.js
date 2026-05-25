@@ -6,11 +6,15 @@ module.exports = {
       colors: {
         quran: {
           navy: '#0f1729',
-          primary: '#151f64',
-          deep: '#14203f',
+          primary: '#1b8354',
+          primaryHover: '#156b44',
+          deep: '#0d5c3a',
           gold: '#c9a227',
-          cream: '#faf8f3',
-          muted: '#64748b',
+          cream: '#f7f8f7',
+          surface: '#ffffff',
+          border: '#e1e4e1',
+          muted: '#6b7280',
+          text: '#232323',
         },
       },
       fontFamily: {
@@ -18,8 +22,8 @@ module.exports = {
         sans: ['"Source Sans 3"', 'system-ui', 'sans-serif'],
       },
       boxShadow: {
-        card: '0 4px 20px rgba(15, 23, 41, 0.08)',
-        'card-hover': '0 8px 30px rgba(21, 31, 100, 0.15)',
+        card: '0 1px 3px rgba(0, 0, 0, 0.06)',
+        'card-hover': '0 4px 12px rgba(27, 131, 84, 0.12)',
       },
     },
   },

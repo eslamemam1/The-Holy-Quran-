@@ -38,7 +38,7 @@ export function QuranProvider({ children }) {
         setListLoading(false);
       })
       .catch(() => {
-        setListError('Could not load surah list.');
+        setListError('errors.loadList');
         setListLoading(false);
       });
   }, []);
@@ -71,30 +71,40 @@ export function QuranProvider({ children }) {
       setLoadingSurah(null);
       return data;
     } catch {
-      setFetchError('Something went wrong. Please try again.');
+      setFetchError('errors.loadSurah');
       setLoadingSurah(null);
       return null;
     }
   }, []);
 
   const goToSurah = useCallback(
-    (surahNum) => {
+    (surahNum, mushafPage = 1) => {
       const n = clampSurah(surahNum);
-      remember({ surah: n, ayah: 1, view: 'surah' });
-      navigate(`/surah/${n}`);
+      const p = Math.max(1, parseInt(mushafPage, 10) || 1);
+      remember({ surah: n, ayah: 1, view: 'reading', mushafPage: p });
+      navigate(`/surah/${n}/reading/page/${p}`);
     },
     [navigate, remember]
   );
 
-  const goToAyah = useCallback(
+  const goToReading = useCallback(
+    (surahNum, page = 1) => {
+      goToSurah(surahNum, page);
+    },
+    [goToSurah]
+  );
+
+  const goToVerse = useCallback(
     (surahNum, ayahNum = 1) => {
       const s = clampSurah(surahNum);
       const a = Math.max(1, parseInt(ayahNum, 10) || 1);
-      remember({ surah: s, ayah: a, view: 'ayah' });
-      navigate(`/ayah/${s}/${a}`);
+      remember({ surah: s, ayah: a, view: 'verse', mushafPage: 1 });
+      navigate(`/surah/${s}/verse/${a}`);
     },
     [navigate, remember]
   );
+
+  const goToAyah = goToVerse;
 
   const toggleBookmark = useCallback((surahNum) => {
     const next = toggleBookmarkStorage(surahNum);
@@ -122,6 +132,8 @@ export function QuranProvider({ children }) {
       lastRead,
       loadSurah,
       goToSurah,
+      goToReading,
+      goToVerse,
       goToAyah,
       remember,
       toggleBookmark,
@@ -139,6 +151,8 @@ export function QuranProvider({ children }) {
       lastRead,
       loadSurah,
       goToSurah,
+      goToReading,
+      goToVerse,
       goToAyah,
       remember,
       toggleBookmark,

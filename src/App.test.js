@@ -8,5 +8,7 @@ test('renders app title', () => {
       <App />
     </BrowserRouter>
   );
-  expect(screen.getByText(/Quran Kareem/i)).toBeInTheDocument();
+  expect(
+    screen.getByText(/Quran Kareem|القرآن الكريم/i)
+  ).toBeInTheDocument();
 });

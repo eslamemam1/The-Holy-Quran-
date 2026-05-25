@@ -13,8 +13,7 @@ src/
 │   └── App.css
 ├── pages/                  # Route-level screens
 │   ├── Home.js
-│   ├── Surah.js
-│   └── Ayah.js
+│   └── SurahReader.js      # Reading + Verse-by-Verse modes (Quran.com-style)
 ├── components/
 │   ├── layout/             # Navbar, footer, scroll behavior
 │   ├── ui/                 # Reusable UI (buttons, spinners, search)
@@ -47,8 +46,11 @@ src/
 - Full surah view and ayah-by-ayah mode
 - Audio recitation (full surah and per-ayah)
 - Bookmarks and continue reading (saved in browser)
-- Shareable URLs: `/surah/36`, `/ayah/36/1`
+- **Reading mode** & **Verse by Verse** (like [Quran.com](https://quran.com/1?readingMode=arabic))
+- Mushaf page breaks inside Reading mode
+- Shareable URLs: `/surah/36/reading/page/3`, `/surah/36/verse/5`
 - Cached surah data for faster navigation
+- **Arabic / English UI** with RTL layout and language toggle (saved in browser)
 
 ## Tech stack
 

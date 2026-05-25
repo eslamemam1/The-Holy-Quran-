@@ -3,7 +3,12 @@ const KEYS = {
   BOOKMARKS: 'quran_bookmarks',
 };
 
-const defaultLastRead = { surah: 1, ayah: 1, view: 'surah' };
+const defaultLastRead = {
+  surah: 1,
+  ayah: 1,
+  view: 'reading',
+  mushafPage: 1,
+};
 
 export function clampSurah(n) {
   const num = parseInt(n, 10);
@@ -25,18 +30,23 @@ export function getLastRead() {
     return {
       surah: clampSurah(data.surah),
       ayah: clampAyah(data.ayah),
-      view: data.view === 'ayah' ? 'ayah' : 'surah',
+      view:
+        data.view === 'verse' || data.view === 'ayah'
+          ? 'verse'
+          : 'reading',
+      mushafPage: Math.max(1, parseInt(data.mushafPage, 10) || 1),
     };
   } catch {
     return { ...defaultLastRead };
   }
 }
 
-export function setLastRead({ surah, ayah, view }) {
+export function setLastRead({ surah, ayah, view, mushafPage }) {
   const payload = {
     surah: clampSurah(surah),
     ayah: clampAyah(ayah),
-    view: view === 'ayah' ? 'ayah' : 'surah',
+    view: view === 'verse' || view === 'ayah' ? 'verse' : 'reading',
+    mushafPage: Math.max(1, parseInt(mushafPage, 10) || 1),
   };
   localStorage.setItem(KEYS.LAST_READ, JSON.stringify(payload));
   return payload;

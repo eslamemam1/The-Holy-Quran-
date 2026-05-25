@@ -1,41 +1,8 @@
-.bg {
-  background-color: #faf8f3;
-  background-image: url('../assets/images/bg.png');
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
-  background-blend-mode: overlay;
-}
-
-.bg::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background: linear-gradient(
-    180deg,
-    rgba(250, 248, 243, 0.92) 0%,
-    rgba(250, 248, 243, 0.88) 100%
-  );
-  pointer-events: none;
-  z-index: 0;
-}
-
-.bg > * {
-  position: relative;
-  z-index: 1;
-}
-
-.paner {
-  width: min(320px, 70%);
-  height: auto;
-  filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.25));
-}
-
 .hero-pattern {
-  background-color: #151f64;
+  background-color: #1b8354;
   background-image: radial-gradient(
       circle at 20% 80%,
-      rgba(201, 162, 39, 0.15) 0%,
+      rgba(255, 255, 255, 0.12) 0%,
       transparent 50%
     ),
     radial-gradient(
@@ -43,4 +10,14 @@
       rgba(255, 255, 255, 0.08) 0%,
       transparent 40%
     );
+}
+
+.paner {
+  width: min(320px, 70%);
+  height: auto;
+  filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.2));
+}
+
+.reader-page {
+  background: #f7f8f7;
 }
