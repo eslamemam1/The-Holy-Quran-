@@ -1,0 +1,14 @@
+.paner{
+    width: 70%;
+    height: 70%;
+}
+@font-face {
+    font-family: "myFirstFont";
+    src: local("C: \Windows\Fonts\aldhabi.ttf");
+}
+.font{
+    font-family: "myFirstFont";
+}
+.bg{
+    background-image: url("./bg.png");
+}
