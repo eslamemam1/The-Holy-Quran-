@@ -125,3 +125,19 @@ export function IconSearch({ className }) {
     </IconBase>
   );
 }
+
+export function IconChevronLeft({ className }) {
+  return (
+    <IconBase className={className}>
+      <path d="m15 6-6 6 6 6" />
+    </IconBase>
+  );
+}
+
+export function IconChevronRight({ className }) {
+  return (
+    <IconBase className={className}>
+      <path d="m9 6 6 6-6 6" />
+    </IconBase>
+  );
+}

@@ -8,6 +8,7 @@ import {
 } from '../../i18n/content';
 import { groupAyahsByMushafPage, showBismillah } from '../../utils/mushaf';
 import AyahNumberMenu from './AyahNumberMenu';
+import { IconChevronLeft, IconChevronRight } from '../ui/Icons';
 
 export default function ReadingModeView({
   surah,
@@ -51,7 +52,9 @@ export default function ReadingModeView({
   }, [pageNum, closeMenu]);
 
   return (
-    <div className="reader-reading-wrap mx-auto max-w-3xl px-4 py-6 sm:px-6">
+    <div
+      className={`reader-reading-wrap mx-auto max-w-3xl px-4 py-6 sm:px-6${totalPages > 1 ? ' reader-reading-wrap--paged' : ''}`}
+    >
       <p className="reader-select-ayah-hint mb-4 text-center text-xs text-quran-muted">
         {t('reader.selectAyahHint')}
       </p>
@@ -146,38 +149,79 @@ export default function ReadingModeView({
       </div>
 
       {totalPages > 1 && (
-        <nav
-          className="reader-page-nav reader-page-nav--sticky mt-8 flex flex-wrap items-center justify-center gap-2 rounded-xl border border-quran-border/80 bg-white/90 px-4 py-4 backdrop-blur-sm"
-          aria-label={t('mushaf.page')}
-        >
-          <button
-            type="button"
-            className="reader-action-btn"
-            disabled={pageNum <= 1}
-            onClick={() => onPageChange(pageNum - 1)}
+        <>
+          <nav
+            className="reader-page-nav-mobile md:hidden"
+            aria-label={t('reader.pageNav', {
+              current: pageNum,
+              total: totalPages,
+            })}
           >
-            {t('mushaf.prevPage')}
-          </button>
-          <span className="px-3 text-sm font-medium text-quran-muted">
-            {t('reader.pageNav', { current: pageNum, total: totalPages })}
-            {mushafPage ? ` · ${t('mushaf.mushafPage', { page: mushafPage })}` : ''}
-            {(activeAyahInsurah ?? selectedAyahInsurah) != null && (
-              <span className="block text-xs text-quran-primary sm:inline sm:before:content-['·'] sm:before:mx-1">
-                {t('reader.startFromAyah', {
-                  n: activeAyahInsurah ?? selectedAyahInsurah,
-                })}
-              </span>
-            )}
-          </span>
-          <button
-            type="button"
-            className="reader-action-btn"
-            disabled={pageNum >= totalPages}
-            onClick={() => onPageChange(pageNum + 1)}
+            <button
+              type="button"
+              className="reader-page-nav-mobile-btn"
+              disabled={pageNum <= 1}
+              onClick={() => onPageChange(pageNum - 1)}
+              aria-label={t('mushaf.prevPage')}
+            >
+              {lang === 'ar' ? (
+                <IconChevronRight className="h-6 w-6" />
+              ) : (
+                <IconChevronLeft className="h-6 w-6" />
+              )}
+              <span className="sr-only">{t('mushaf.prevPage')}</span>
+            </button>
+            <button
+              type="button"
+              className="reader-page-nav-mobile-btn"
+              disabled={pageNum >= totalPages}
+              onClick={() => onPageChange(pageNum + 1)}
+              aria-label={t('mushaf.nextPage')}
+            >
+              {lang === 'ar' ? (
+                <IconChevronLeft className="h-6 w-6" />
+              ) : (
+                <IconChevronRight className="h-6 w-6" />
+              )}
+              <span className="sr-only">{t('mushaf.nextPage')}</span>
+            </button>
+          </nav>
+
+          <nav
+            className="reader-page-nav mt-8 hidden flex-wrap items-center justify-center gap-2 px-4 py-4 md:flex"
+            aria-label={t('mushaf.page')}
           >
-            {t('mushaf.nextPage')}
-          </button>
-        </nav>
+            <button
+              type="button"
+              className="reader-action-btn"
+              disabled={pageNum <= 1}
+              onClick={() => onPageChange(pageNum - 1)}
+            >
+              {t('mushaf.prevPage')}
+            </button>
+            <span className="px-3 text-sm font-medium text-quran-muted">
+              {t('reader.pageNav', { current: pageNum, total: totalPages })}
+              {mushafPage
+                ? ` · ${t('mushaf.mushafPage', { page: mushafPage })}`
+                : ''}
+              {(activeAyahInsurah ?? selectedAyahInsurah) != null && (
+                <span className="inline before:mx-1 before:content-['·']">
+                  {t('reader.startFromAyah', {
+                    n: activeAyahInsurah ?? selectedAyahInsurah,
+                  })}
+                </span>
+              )}
+            </span>
+            <button
+              type="button"
+              className="reader-action-btn"
+              disabled={pageNum >= totalPages}
+              onClick={() => onPageChange(pageNum + 1)}
+            >
+              {t('mushaf.nextPage')}
+            </button>
+          </nav>
+        </>
       )}
     </div>
   );
