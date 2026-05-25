@@ -9,7 +9,65 @@ import {
   getSurahTafsir,
   hasSurahTafsir,
 } from '../../i18n/content';
-import { IconHeadphones, IconPause, IconTranslation } from '../ui/Icons';
+import {
+  IconHeadphones,
+  IconPause,
+  IconTranslation,
+  IconChevronLeft,
+  IconChevronRight,
+} from '../ui/Icons';
+import { useReaderMobileChrome } from '../../context/ReaderMobileChromeContext';
+
+function MobilePageNav({ pageNav, t, lang }) {
+  if (!pageNav) return null;
+
+  const { pageNum, totalPages, onPageChange } = pageNav;
+  const prevIcon =
+    lang === 'ar' ? (
+      <IconChevronRight className="h-3.5 w-3.5 shrink-0" />
+    ) : (
+      <IconChevronLeft className="h-3.5 w-3.5 shrink-0" />
+    );
+  const nextIcon =
+    lang === 'ar' ? (
+      <IconChevronLeft className="h-3.5 w-3.5 shrink-0" />
+    ) : (
+      <IconChevronRight className="h-3.5 w-3.5 shrink-0" />
+    );
+
+  return (
+    <div
+      className="reader-mobile-pages"
+      aria-label={t('reader.pageNav', { current: pageNum, total: totalPages })}
+    >
+      <button
+        type="button"
+        className="reader-page-nav-mobile-btn"
+        disabled={pageNum <= 1}
+        onClick={() => onPageChange(pageNum - 1)}
+        aria-label={t('mushaf.prevPageLabel')}
+      >
+        {prevIcon}
+        <span className="reader-page-nav-mobile-label">
+          {t('mushaf.prevPageLabel')}
+        </span>
+      </button>
+      <span className="reader-mobile-page-count">{pageNum}/{totalPages}</span>
+      <button
+        type="button"
+        className="reader-page-nav-mobile-btn"
+        disabled={pageNum >= totalPages}
+        onClick={() => onPageChange(pageNum + 1)}
+        aria-label={t('mushaf.nextPageLabel')}
+      >
+        <span className="reader-page-nav-mobile-label">
+          {t('mushaf.nextPageLabel')}
+        </span>
+        {nextIcon}
+      </button>
+    </div>
+  );
+}
 
 function ReaderActionButtons({
   showListen,
@@ -22,6 +80,7 @@ function ReaderActionButtons({
   layout,
 }) {
   const isMobile = layout === 'mobile';
+  const iconClass = isMobile ? 'h-4 w-4 shrink-0' : 'h-5 w-5 shrink-0';
 
   return (
     <>
@@ -36,9 +95,9 @@ function ReaderActionButtons({
           }
         >
           {playing ? (
-            <IconPause className="h-5 w-5 shrink-0" />
+            <IconPause className={iconClass} />
           ) : (
-            <IconHeadphones className="h-5 w-5 shrink-0" />
+            <IconHeadphones className={iconClass} />
           )}
           <span>{playing ? t('reader.stop') : t('reader.listen')}</span>
           {!playing && !isMobile && (
@@ -55,7 +114,7 @@ function ReaderActionButtons({
             : `reader-action-btn${showTranslation ? ' reader-action-btn-active' : ''}`
         }
       >
-        <IconTranslation className="h-5 w-5 shrink-0" />
+        <IconTranslation className={iconClass} />
         <span>{t('reader.translation')}</span>
       </button>
     </>
@@ -74,6 +133,7 @@ export default function SurahReaderHeader({
   onSelectSurah,
 }) {
   const { t, lang } = useLanguage();
+  const { pageNav } = useReaderMobileChrome();
   const location = useLocation();
   const isVerseMode = location.pathname.includes('/verse/');
 
@@ -81,19 +141,19 @@ export default function SurahReaderHeader({
 
   return (
     <>
-      <header className="reader-header sticky z-40 overflow-hidden rounded-b-3xl bg-quran-surface">
+      <header className="reader-header reader-header--compact sticky z-40 overflow-hidden rounded-b-3xl bg-quran-surface">
         <div className="reader-header-top">
           <div className="mx-auto max-w-3xl">
-            <div className="mb-3 flex items-start justify-between gap-3 md:mb-4">
-              <div className="flex min-w-0 flex-1 items-start gap-2.5 md:gap-3">
+            <div className="mb-2 flex items-start justify-between gap-2 md:mb-4 md:gap-3">
+              <div className="flex min-w-0 flex-1 items-start gap-2 md:gap-3">
                 <span className="reader-surah-badge">{surahNum}</span>
                 <div className="min-w-0 text-start">
-                  <h1 className="text-lg font-bold text-white md:text-2xl">
+                  <h1 className="text-base font-bold leading-tight text-white md:text-2xl">
                     {lang === 'ar'
                       ? data.asma.ar.long
                       : getSurahName(data, lang, 'long')}
                   </h1>
-                  <p className="mt-0.5 text-xs text-white/75 md:text-sm">
+                  <p className="mt-0.5 hidden text-xs text-white/75 md:block md:text-sm">
                     {getSurahMeaning(data, lang)}
                     {getSurahType(data, lang) && (
                       <span className="text-quran-gold/90">
@@ -121,7 +181,7 @@ export default function SurahReaderHeader({
               </p>
             )}
 
-            <div className="grid grid-cols-2 gap-2 md:flex md:flex-wrap md:items-center">
+            <div className="grid grid-cols-2 gap-1.5 md:flex md:flex-wrap md:items-center md:gap-2">
               <Link
                 to={`/surah/${surah}/reading`}
                 className={`reader-mode-pill justify-center md:justify-start ${!isVerseMode ? 'reader-mode-pill-active' : ''}`}
@@ -158,7 +218,7 @@ export default function SurahReaderHeader({
           </div>
         </div>
 
-        <div className="reader-header-toolbar md:hidden">
+        <div className="reader-header-toolbar reader-header-toolbar--compact md:hidden">
           <div className="mx-auto max-w-3xl">
             <SurahPicker
               currentSurah={surah}
@@ -173,16 +233,19 @@ export default function SurahReaderHeader({
         className="reader-mobile-dock md:hidden"
         aria-label={t('reader.mobileActions')}
       >
-        <ReaderActionButtons
-          showListen={showListen}
-          playing={playing}
-          showTranslation={showTranslation}
-          onPlay={onPlay}
-          onPause={onPause}
-          onToggleTranslation={onToggleTranslation}
-          t={t}
-          layout="mobile"
-        />
+        <MobilePageNav pageNav={pageNav} t={t} lang={lang} />
+        <div className="reader-mobile-dock-actions">
+          <ReaderActionButtons
+            showListen={showListen}
+            playing={playing}
+            showTranslation={showTranslation}
+            onPlay={onPlay}
+            onPause={onPause}
+            onToggleTranslation={onToggleTranslation}
+            t={t}
+            layout="mobile"
+          />
+        </div>
       </div>
     </>
   );

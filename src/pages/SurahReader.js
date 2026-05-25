@@ -16,6 +16,7 @@ import { useQuran } from '../context/QuranContext';
 import { clampSurah, clampAyah } from '../utils/storage';
 import { useLanguage } from '../context/LanguageContext';
 import { groupAyahsByMushafPage, clampSurahPage } from '../utils/mushaf';
+import { ReaderMobileChromeProvider } from '../context/ReaderMobileChromeContext';
 import { useReadingAyahAudio } from '../hooks/useReadingAyahAudio';
 
 function useSurahData(surah) {
@@ -224,23 +225,25 @@ export function SurahReaderLayout() {
   }
 
   return (
-    <div className="reader-page reader-page--mobile-dock min-h-screen bg-quran-cream md:pb-16">
-      <SurahReaderHeader
-        surah={surah}
-        data={data}
-        showTranslation={showTranslation}
-        showListen={isReadingMode}
-        playing={readingPlaying}
-        onToggleTranslation={() => setShowTranslation((v) => !v)}
-        onPlay={handleReadingPlay}
-        onPause={handleReadingPause}
-        onSelectSurah={handleSelectSurah}
-      />
-      {isReadingMode && (
-        <audio ref={readingAudioRef} className="hidden" preload="auto" />
-      )}
-      <Outlet context={outletContext} />
-    </div>
+    <ReaderMobileChromeProvider>
+      <div className="reader-page reader-page--mobile-dock min-h-screen bg-quran-cream md:pb-16">
+        <SurahReaderHeader
+          surah={surah}
+          data={data}
+          showTranslation={showTranslation}
+          showListen={isReadingMode}
+          playing={readingPlaying}
+          onToggleTranslation={() => setShowTranslation((v) => !v)}
+          onPlay={handleReadingPlay}
+          onPause={handleReadingPause}
+          onSelectSurah={handleSelectSurah}
+        />
+        {isReadingMode && (
+          <audio ref={readingAudioRef} className="hidden" preload="auto" />
+        )}
+        <Outlet context={outletContext} />
+      </div>
+    </ReaderMobileChromeProvider>
   );
 }
 

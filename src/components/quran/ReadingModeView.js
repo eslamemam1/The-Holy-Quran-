@@ -8,7 +8,7 @@ import {
 } from '../../i18n/content';
 import { groupAyahsByMushafPage, showBismillah } from '../../utils/mushaf';
 import AyahNumberMenu from './AyahNumberMenu';
-import { IconChevronLeft, IconChevronRight } from '../ui/Icons';
+import { useReaderMobileChrome } from '../../context/ReaderMobileChromeContext';
 
 export default function ReadingModeView({
   surah,
@@ -47,15 +47,24 @@ export default function ReadingModeView({
     [navigate, surah]
   );
 
+  const { setPageNav, clearPageNav } = useReaderMobileChrome();
+
   useEffect(() => {
     closeMenu();
   }, [pageNum, closeMenu]);
 
+  useEffect(() => {
+    if (totalPages > 1) {
+      setPageNav({ pageNum, totalPages, onPageChange });
+    } else {
+      clearPageNav();
+    }
+    return () => clearPageNav();
+  }, [pageNum, totalPages, onPageChange, setPageNav, clearPageNav]);
+
   return (
-    <div
-      className={`reader-reading-wrap mx-auto max-w-3xl px-4 py-6 sm:px-6${totalPages > 1 ? ' reader-reading-wrap--paged' : ''}`}
-    >
-      <p className="reader-select-ayah-hint mb-4 text-center text-xs text-quran-muted">
+    <div className="reader-reading-wrap mx-auto max-w-3xl px-3 py-4 sm:px-6 sm:py-6">
+      <p className="reader-select-ayah-hint mb-3 hidden text-center text-xs text-quran-muted md:mb-4 md:block">
         {t('reader.selectAyahHint')}
       </p>
 
@@ -149,48 +158,10 @@ export default function ReadingModeView({
       </div>
 
       {totalPages > 1 && (
-        <>
-          <nav
-            className="reader-page-nav-mobile md:hidden"
-            aria-label={t('reader.pageNav', {
-              current: pageNum,
-              total: totalPages,
-            })}
-          >
-            <button
-              type="button"
-              className="reader-page-nav-mobile-btn"
-              disabled={pageNum <= 1}
-              onClick={() => onPageChange(pageNum - 1)}
-              aria-label={t('mushaf.prevPageLabel')}
-            >
-              {lang === 'ar' ? (
-                <IconChevronRight className="h-5 w-5 shrink-0" />
-              ) : (
-                <IconChevronLeft className="h-5 w-5 shrink-0" />
-              )}
-              <span>{t('mushaf.prevPageLabel')}</span>
-            </button>
-            <button
-              type="button"
-              className="reader-page-nav-mobile-btn"
-              disabled={pageNum >= totalPages}
-              onClick={() => onPageChange(pageNum + 1)}
-              aria-label={t('mushaf.nextPageLabel')}
-            >
-              <span>{t('mushaf.nextPageLabel')}</span>
-              {lang === 'ar' ? (
-                <IconChevronLeft className="h-5 w-5 shrink-0" />
-              ) : (
-                <IconChevronRight className="h-5 w-5 shrink-0" />
-              )}
-            </button>
-          </nav>
-
-          <nav
-            className="reader-page-nav mt-8 hidden flex-wrap items-center justify-center gap-2 px-4 py-4 md:flex"
-            aria-label={t('mushaf.page')}
-          >
+        <nav
+          className="reader-page-nav mt-8 hidden flex-wrap items-center justify-center gap-2 px-4 py-4 md:flex"
+          aria-label={t('mushaf.page')}
+        >
             <button
               type="button"
               className="reader-action-btn"
@@ -220,8 +191,7 @@ export default function ReadingModeView({
             >
               {t('mushaf.nextPage')}
             </button>
-          </nav>
-        </>
+        </nav>
       )}
     </div>
   );
