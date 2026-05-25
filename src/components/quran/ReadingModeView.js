@@ -162,28 +162,28 @@ export default function ReadingModeView({
               className="reader-page-nav-mobile-btn"
               disabled={pageNum <= 1}
               onClick={() => onPageChange(pageNum - 1)}
-              aria-label={t('mushaf.prevPage')}
+              aria-label={t('mushaf.prevPageLabel')}
             >
               {lang === 'ar' ? (
-                <IconChevronRight className="h-6 w-6" />
+                <IconChevronRight className="h-5 w-5 shrink-0" />
               ) : (
-                <IconChevronLeft className="h-6 w-6" />
+                <IconChevronLeft className="h-5 w-5 shrink-0" />
               )}
-              <span className="sr-only">{t('mushaf.prevPage')}</span>
+              <span>{t('mushaf.prevPageLabel')}</span>
             </button>
             <button
               type="button"
               className="reader-page-nav-mobile-btn"
               disabled={pageNum >= totalPages}
               onClick={() => onPageChange(pageNum + 1)}
-              aria-label={t('mushaf.nextPage')}
+              aria-label={t('mushaf.nextPageLabel')}
             >
+              <span>{t('mushaf.nextPageLabel')}</span>
               {lang === 'ar' ? (
-                <IconChevronLeft className="h-6 w-6" />
+                <IconChevronLeft className="h-5 w-5 shrink-0" />
               ) : (
-                <IconChevronRight className="h-6 w-6" />
+                <IconChevronRight className="h-5 w-5 shrink-0" />
               )}
-              <span className="sr-only">{t('mushaf.nextPage')}</span>
             </button>
           </nav>
 

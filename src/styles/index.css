@@ -277,7 +277,7 @@
   }
 
   .reader-page-nav-mobile-btn {
-    @apply flex h-11 items-center justify-center rounded-2xl border border-quran-border bg-quran-surface text-quran-primary transition active:scale-[0.98] disabled:pointer-events-none disabled:opacity-40;
+    @apply flex h-12 items-center justify-center gap-1.5 rounded-2xl border border-quran-border bg-quran-surface px-2 text-xs font-bold text-quran-primary transition active:scale-[0.98] disabled:pointer-events-none disabled:opacity-40;
   }
 
   .reader-reading-wrap--paged {
