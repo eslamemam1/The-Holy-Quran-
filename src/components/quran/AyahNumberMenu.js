@@ -1,4 +1,9 @@
 import { useEffect, useRef } from 'react';
+import {
+  IconHeadphones,
+  IconOneAyah,
+  IconOpenAyah,
+} from '../ui/Icons';
 
 export default function AyahNumberMenu({
   ayahNum,
@@ -73,8 +78,8 @@ export default function AyahNumberMenu({
               onClose();
             }}
           >
-            <span className="reader-ayah-menu-icon" aria-hidden>
-              ▶
+            <span className="reader-ayah-menu-icon">
+              <IconHeadphones className="h-4 w-4" />
             </span>
             {t('reader.menuListen')}
           </button>
@@ -87,8 +92,8 @@ export default function AyahNumberMenu({
               onClose();
             }}
           >
-            <span className="reader-ayah-menu-icon" aria-hidden>
-              ①
+            <span className="reader-ayah-menu-icon">
+              <IconOneAyah className="h-4 w-4" />
             </span>
             {t('reader.menuListenOnly')}
           </button>
@@ -101,8 +106,8 @@ export default function AyahNumberMenu({
               onClose();
             }}
           >
-            <span className="reader-ayah-menu-icon" aria-hidden>
-              ↗
+            <span className="reader-ayah-menu-icon">
+              <IconOpenAyah className="h-4 w-4" />
             </span>
             {t('reader.menuGoToAyah')}
           </button>

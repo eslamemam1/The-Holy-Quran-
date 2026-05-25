@@ -11,7 +11,7 @@ export default function ContinueReading() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 sm:px-6">
-      <div className="mb-10 -mt-6 rounded-2xl border border-quran-gold/30 bg-white p-5 shadow-card sm:p-6">
+      <div className="mb-10 -mt-6 rounded-2xl border border-quran-goldSoft bg-white p-5 shadow-card sm:p-6">
         <p className="section-label mb-1">{t('continue.label')}</p>
         <p className="text-lg font-bold text-quran-navy">
           {name}

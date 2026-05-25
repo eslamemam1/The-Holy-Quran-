@@ -4,11 +4,15 @@
 
 @layer base {
   body {
-    @apply m-0 bg-quran-cream text-quran-text font-sans antialiased;
+    @apply m-0 bg-quran-cream text-quran-text font-sans text-ui-sm antialiased;
   }
 
   [dir='rtl'] body {
-    font-family: 'Noto Sans Arabic', 'Source Sans 3', system-ui, sans-serif;
+    font-family: Cairo, system-ui, sans-serif;
+  }
+
+  [dir='rtl'] .arabic-text {
+    font-family: Amiri, serif;
   }
 
   [dir='rtl'] .section-label {
@@ -18,69 +22,90 @@
 
 @layer components {
   .btn-primary {
-    @apply inline-flex items-center justify-center rounded-lg bg-quran-primary px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:bg-quran-primaryHover active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50 sm:px-5 sm:py-3 sm:text-base;
+    @apply inline-flex items-center justify-center gap-2 rounded-2xl bg-quran-primary px-5 py-2.5 text-sm font-bold text-white shadow-card transition-all duration-200 hover:bg-quran-primaryHover active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50;
   }
 
   .btn-outline {
-    @apply inline-flex items-center justify-center rounded-lg border border-quran-border bg-quran-surface px-4 py-2.5 text-sm font-semibold text-quran-text transition-all duration-200 hover:border-quran-primary hover:text-quran-primary sm:px-5 sm:py-3 sm:text-base;
+    @apply inline-flex items-center justify-center gap-2 rounded-2xl border border-quran-border bg-quran-surface px-5 py-2.5 text-sm font-bold text-quran-text transition-all duration-200 hover:border-quran-gold hover:text-quran-primary;
   }
 
   .nav-link {
-    @apply rounded-lg px-3 py-2 text-sm font-semibold text-quran-muted transition-colors hover:bg-emerald-50 hover:text-quran-primary sm:px-4;
+    @apply inline-flex items-center gap-2 rounded-2xl px-3 py-2 text-sm font-bold text-quran-muted transition-colors hover:bg-quran-mintSoft hover:text-quran-primary;
   }
 
   .nav-link-active {
-    @apply bg-quran-primary text-white shadow-sm hover:bg-quran-primaryHover hover:text-white;
+    @apply bg-quran-primary text-white shadow-card hover:bg-quran-primaryHover hover:text-white;
+  }
+
+  .nav-link-active .nav-link-icon {
+    @apply text-quran-gold;
   }
 
   .surah-card {
-    @apply flex h-[4.5rem] items-center justify-between rounded-xl border border-quran-border bg-quran-surface px-4 shadow-card transition-all hover:border-emerald-300 hover:shadow-card-hover;
+    @apply flex h-[4.75rem] items-center justify-between rounded-2xl border border-quran-border bg-quran-surface px-4 shadow-card transition-all hover:border-quran-mintDark hover:shadow-card-hover;
   }
 
   .ayah-card {
-    @apply rounded-xl border border-quran-border bg-quran-surface p-4 shadow-card sm:p-6;
+    @apply rounded-2xl border border-quran-border bg-quran-surface p-4 shadow-card sm:p-6;
   }
 
   .section-label {
-    @apply text-xs font-bold uppercase tracking-wider text-quran-primary;
+    @apply text-xs font-bold uppercase tracking-wider text-quran-gold;
   }
 
   .arabic-text {
     @apply font-arabic leading-loose text-quran-text;
   }
 
-  /* Quran.com-style reader */
+  /* Reader */
   .reader-header {
-    @apply top-14;
+    @apply top-14 border-0 shadow-card;
+  }
+
+  .reader-header-top {
+    @apply bg-quran-header px-4 py-5 text-white sm:px-6;
+    background-image: radial-gradient(
+        circle at 15% 90%,
+        rgba(209, 169, 59, 0.15) 0%,
+        transparent 45%
+      ),
+      radial-gradient(
+        circle at 85% 10%,
+        rgba(255, 255, 255, 0.08) 0%,
+        transparent 40%
+      );
+  }
+
+  .reader-header-toolbar {
+    @apply border-t border-quran-border bg-quran-surface px-4 py-4 sm:px-6;
   }
 
   .reader-surah-badge {
-    @apply flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-emerald-50 text-sm font-bold text-quran-primary;
+    @apply flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-quran-goldSoft text-sm font-bold text-quran-gold;
   }
 
   .reader-mode-pill {
-    @apply rounded-full border border-quran-border bg-quran-surface px-4 py-2 text-sm font-semibold text-quran-muted transition hover:border-emerald-300;
+    @apply inline-flex items-center gap-1.5 rounded-full border border-white/25 bg-white/10 px-4 py-2 text-sm font-bold text-white/90 transition hover:bg-white/20;
   }
 
   .reader-mode-pill-active {
-    @apply border-quran-primary bg-quran-primary text-white shadow-sm;
+    @apply border-quran-gold bg-quran-gold text-quran-deep shadow-sm;
   }
 
   .reader-action-btn {
-    @apply inline-flex items-center gap-2 rounded-lg border border-quran-border bg-quran-surface px-3 py-2 text-sm font-semibold text-quran-text transition hover:border-quran-primary hover:text-quran-primary;
+    @apply inline-flex items-center gap-2 rounded-2xl border border-quran-border bg-quran-surface px-3 py-2.5 text-sm font-bold text-quran-text transition hover:border-quran-primary hover:text-quran-primary;
   }
 
   .reader-action-btn--listen {
-    @apply inline-flex flex-wrap items-center gap-1;
+    @apply inline-flex flex-wrap items-center gap-1.5 border-quran-mintDark bg-quran-mintSoft text-quran-primary hover:bg-quran-mint;
   }
 
   .reader-action-btn-active {
-    @apply border-quran-primary bg-emerald-50 text-quran-primary;
+    @apply border-quran-gold bg-quran-goldLight text-quran-deep;
   }
 
-  /* Reading mode: continuous mushaf text */
   .reader-reading-panel {
-    @apply relative rounded-2xl border border-quran-border bg-quran-surface px-5 py-8 shadow-card sm:px-8 sm:py-10;
+    @apply relative rounded-3xl border border-quran-border bg-quran-surface px-5 py-8 shadow-card sm:px-8 sm:py-10;
   }
 
   .reader-bismillah {
@@ -99,7 +124,7 @@
   }
 
   .reader-ayah-inline--active .reader-ayah-words {
-    @apply rounded-sm bg-emerald-100/80 px-0.5;
+    @apply rounded-md bg-quran-mint px-0.5;
   }
 
   .reader-ayah-num-wrap {
@@ -107,52 +132,50 @@
     vertical-align: middle;
   }
 
+  .reader-ayah-num {
+    @apply inline-flex h-7 min-w-[1.75rem] cursor-pointer items-center justify-center rounded-full border-0 bg-quran-mint px-1.5 text-[0.7rem] font-bold leading-none text-quran-primary shadow-sm transition hover:bg-quran-primary hover:text-white sm:text-xs;
+  }
+
   .reader-ayah-num--selected {
-    @apply bg-amber-100 text-amber-900 ring-2 ring-amber-400;
+    @apply bg-quran-goldSoft text-quran-deep ring-2 ring-quran-gold;
   }
 
   .reader-ayah-num--active {
-    @apply bg-quran-primary text-white ring-2 ring-quran-primary/30;
+    @apply bg-quran-primary text-white ring-2 ring-quran-gold;
   }
 
+  /* Dark horizontal ayah menu (mockup style) */
   .reader-ayah-menu {
-    @apply absolute right-0 top-full z-50 mt-1 min-w-[11rem] overflow-hidden rounded-xl border border-quran-border bg-white py-1 text-left shadow-lg;
+    @apply absolute left-1/2 bottom-full z-50 mb-2 flex -translate-x-1/2 flex-row overflow-hidden rounded-2xl bg-quran-menuDark shadow-menu;
+    min-width: max-content;
   }
 
   .reader-ayah-menu-item {
-    @apply flex w-full items-center gap-2 px-3 py-2.5 text-left text-sm font-medium text-quran-text transition hover:bg-quran-cream;
+    @apply flex min-w-[5.5rem] flex-col items-center gap-1.5 border-r border-white/10 px-3 py-3 text-center text-[11px] font-bold leading-tight text-white transition last:border-r-0 hover:bg-white/10 sm:min-w-[6.25rem] sm:px-4 sm:text-xs;
   }
 
   .reader-ayah-menu-icon {
-    @apply inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md bg-quran-primary/10 text-xs text-quran-primary;
+    @apply flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-quran-gold;
   }
 
   .reader-select-ayah-hint {
-    @apply px-2;
+    @apply px-2 text-quran-muted;
   }
 
   .reader-translation-line--selected {
-    @apply rounded-lg bg-amber-50/80 px-2 py-1;
+    @apply rounded-xl bg-quran-mintSoft px-2 py-1;
   }
 
   .reader-translation-line[role='button'] {
-    @apply cursor-pointer transition hover:bg-quran-cream;
+    @apply cursor-pointer rounded-lg transition hover:bg-quran-mintSoft;
   }
 
   .reader-listen-hint {
-    @apply ml-1 hidden text-xs font-normal text-quran-muted sm:inline;
-  }
-
-  .reader-ayah-words {
-    @apply inline;
-  }
-
-  .reader-ayah-num {
-    @apply inline-flex h-6 min-w-[1.5rem] cursor-pointer items-center justify-center rounded-full border-0 bg-emerald-100/90 px-1 text-[0.65rem] font-bold leading-none text-quran-primary transition hover:bg-quran-primary hover:text-white sm:text-xs;
+    @apply hidden text-xs font-normal opacity-80 sm:inline;
   }
 
   .reader-translations-block {
-    @apply mt-8 space-y-3 border-t border-quran-border/50 pt-6;
+    @apply mt-8 space-y-3 border-t border-quran-border pt-6;
   }
 
   .reader-translation-line {
@@ -164,10 +187,22 @@
   }
 
   .reader-verse-card {
-    @apply rounded-2xl border border-quran-border bg-quran-surface p-6 shadow-card sm:p-8;
+    @apply rounded-3xl border border-quran-border bg-quran-surface p-6 shadow-card sm:p-8;
   }
 
   .reader-verse-badge {
     @apply flex h-10 w-10 items-center justify-center rounded-full bg-quran-primary text-sm font-bold text-white;
+  }
+
+  .reader-page-nav {
+    @apply rounded-2xl border border-quran-border bg-quran-surface;
+  }
+
+  .audio-control-btn {
+    @apply flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-quran-mint text-quran-primary transition hover:bg-quran-primary hover:text-white;
+  }
+
+  .audio-control-btn--playing {
+    @apply bg-quran-primary text-quran-gold hover:bg-quran-primaryHover;
   }
 }

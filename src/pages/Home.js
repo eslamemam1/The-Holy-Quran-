@@ -76,7 +76,7 @@ function Home() {
                   key={num}
                   to={`/surah/${num}/reading`}
                   onClick={() => goToSurah(num)}
-                  className="rounded-full bg-quran-primary/10 px-4 py-2 text-sm font-semibold text-quran-primary transition hover:bg-quran-primary hover:text-white"
+                  className="rounded-full border border-quran-goldSoft bg-quran-goldLight px-4 py-2 text-sm font-bold text-quran-deep transition hover:bg-quran-gold hover:text-white"
                 >
                   {num}.{' '}
                   {getSurahName(meta, lang) || `${t('surah.label')} ${num}`}
@@ -93,7 +93,7 @@ function Home() {
               {t('home.allSurahs')}
             </h2>
           </div>
-          <span className="shrink-0 rounded-full bg-quran-primary/10 px-3 py-1 text-sm font-semibold text-quran-primary">
+          <span className="shrink-0 rounded-full bg-quran-mintSoft px-3 py-1 text-sm font-bold text-quran-primary">
             {listLoading
               ? '…'
               : t('home.shown', { count: filtered.length })}
