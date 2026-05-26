@@ -15,6 +15,7 @@ import {
   IconTranslation,
   IconChevronLeft,
   IconChevronRight,
+  IconHome,
 } from '../ui/Icons';
 import { useReaderMobileChrome } from '../../context/ReaderMobileChromeContext';
 
@@ -220,11 +221,21 @@ export default function SurahReaderHeader({
 
         <div className="reader-header-toolbar reader-header-toolbar--compact md:hidden">
           <div className="mx-auto max-w-3xl">
-            <SurahPicker
-              currentSurah={surah}
-              onSelect={onSelectSurah}
-              className="w-full"
-            />
+            <div className="flex items-center gap-2">
+              <Link
+                to="/"
+                className="reader-home-btn"
+                aria-label={t('nav.home')}
+                title={t('nav.home')}
+              >
+                <IconHome className="h-5 w-5" />
+              </Link>
+              <SurahPicker
+                currentSurah={surah}
+                onSelect={onSelectSurah}
+                className="flex-1"
+              />
+            </div>
           </div>
         </div>
       </header>
