@@ -176,10 +176,6 @@
     margin-bottom: 0;
   }
 
-  .reader-page--mobile-dock {
-    padding-bottom: calc(5.25rem + env(safe-area-inset-bottom));
-  }
-
   .reader-surah-badge {
     @apply flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-quran-goldSoft text-[11px] font-bold text-quran-gold md:h-12 md:w-12 md:rounded-2xl md:text-sm;
   }

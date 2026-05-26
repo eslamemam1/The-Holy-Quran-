@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useMemo, useCallback } from 'react';
+import { useEffect, useState, useRef, useMemo, useCallback } from "react";
 import {
   useParams,
   useNavigate,
@@ -6,18 +6,18 @@ import {
   Navigate,
   Outlet,
   useOutletContext,
-} from 'react-router-dom';
-import LoadingSpinner from '../components/ui/LoadingSpinner';
-import ErrorBanner from '../components/ui/ErrorBanner';
-import SurahReaderHeader from '../components/quran/SurahReaderHeader';
-import ReadingModeView from '../components/quran/ReadingModeView';
-import VerseModeView from '../components/quran/VerseModeView';
-import { useQuran } from '../context/QuranContext';
-import { clampSurah, clampAyah } from '../utils/storage';
-import { useLanguage } from '../context/LanguageContext';
-import { groupAyahsByMushafPage, clampSurahPage } from '../utils/mushaf';
-import { ReaderMobileChromeProvider } from '../context/ReaderMobileChromeContext';
-import { useReadingAyahAudio } from '../hooks/useReadingAyahAudio';
+} from "react-router-dom";
+import LoadingSpinner from "../components/ui/LoadingSpinner";
+import ErrorBanner from "../components/ui/ErrorBanner";
+import SurahReaderHeader from "../components/quran/SurahReaderHeader";
+import ReadingModeView from "../components/quran/ReadingModeView";
+import VerseModeView from "../components/quran/VerseModeView";
+import { useQuran } from "../context/QuranContext";
+import { clampSurah, clampAyah } from "../utils/storage";
+import { useLanguage } from "../context/LanguageContext";
+import { groupAyahsByMushafPage, clampSurahPage } from "../utils/mushaf";
+import { ReaderMobileChromeProvider } from "../context/ReaderMobileChromeContext";
+import { useReadingAyahAudio } from "../hooks/useReadingAyahAudio";
 
 function useSurahData(surah) {
   const { loadSurah, loadingSurah, fetchError, surahCache } = useQuran();
@@ -62,12 +62,12 @@ export function SurahReaderLayout() {
   const surah = clampSurah(surahId);
   const { quran, data, loading, fetchError } = useSurahData(surah);
 
-  const isReadingMode = location.pathname.includes('/reading');
-  const isVerseMode = location.pathname.includes('/verse/');
+  const isReadingMode = location.pathname.includes("/reading");
+  const isVerseMode = location.pathname.includes("/verse/");
 
   const pages = useMemo(
     () => groupAyahsByMushafPage(data?.ayahs ?? []),
-    [data?.ayahs]
+    [data?.ayahs],
   );
   const totalPages = pages.length || 1;
   const currentPage = clampSurahPage(pageNum, totalPages);
@@ -81,7 +81,7 @@ export function SurahReaderLayout() {
       const next = clampSurahPage(p, totalPages);
       navigate(`/surah/${surah}/reading/page/${next}`);
     },
-    [surah, totalPages, navigate]
+    [surah, totalPages, navigate],
   );
 
   const {
@@ -113,7 +113,7 @@ export function SurahReaderLayout() {
       setSelectedAyahInsurah(insurah);
       startReadingAudio(insurah);
     },
-    [startReadingAudio]
+    [startReadingAudio],
   );
 
   const handlePlayAyahOnly = useCallback(
@@ -121,7 +121,7 @@ export function SurahReaderLayout() {
       setSelectedAyahInsurah(insurah);
       playSingleAyah(insurah);
     },
-    [playSingleAyah]
+    [playSingleAyah],
   );
 
   const handleSelectSurah = useCallback(
@@ -150,7 +150,7 @@ export function SurahReaderLayout() {
       stopReadingAudio,
       goToVerse,
       goToSurah,
-    ]
+    ],
   );
 
   useEffect(() => {
@@ -205,13 +205,13 @@ export function SurahReaderLayout() {
       selectedAyahInsurah,
       handlePlayFromAyah,
       handlePlayAyahOnly,
-    ]
+    ],
   );
 
   if (loading) {
     return (
       <div className="reader-page min-h-[60vh]">
-        <LoadingSpinner label={t('surah.loading')} />
+        <LoadingSpinner label={t("surah.loading")} />
       </div>
     );
   }
@@ -219,14 +219,14 @@ export function SurahReaderLayout() {
   if (!data) {
     return (
       <div className="reader-page min-h-[60vh] px-4">
-        <ErrorBanner message={fetchError || t('surah.notFound')} />
+        <ErrorBanner message={fetchError || t("surah.notFound")} />
       </div>
     );
   }
 
   return (
     <ReaderMobileChromeProvider>
-      <div className="reader-page reader-page--mobile-dock min-h-screen bg-quran-cream md:pb-16">
+      <div className="reader-page min-h-screen bg-quran-cream md:pb-16">
         <SurahReaderHeader
           surah={surah}
           data={data}
@@ -276,7 +276,7 @@ export function SurahReadingRoute() {
     remember({
       surah,
       ayah: 1,
-      view: 'reading',
+      view: "reading",
       mushafPage: currentPage,
     });
   }, [surah, currentPage, remember, pageMismatch]);
@@ -286,25 +286,22 @@ export function SurahReadingRoute() {
       const next = clampSurahPage(p, totalPages);
       navigate(`/surah/${surah}/reading/page/${next}`);
     },
-    [surah, totalPages, navigate]
+    [surah, totalPages, navigate],
   );
 
   useEffect(() => {
     const onKey = (e) => {
-      if (e.target.tagName === 'INPUT') return;
-      if (e.key === 'ArrowLeft') goPage(currentPage - 1);
-      if (e.key === 'ArrowRight') goPage(currentPage + 1);
+      if (e.target.tagName === "INPUT") return;
+      if (e.key === "ArrowLeft") goPage(currentPage - 1);
+      if (e.key === "ArrowRight") goPage(currentPage + 1);
     };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
   }, [currentPage, goPage]);
 
   if (pageMismatch) {
     return (
-      <Navigate
-        to={`/surah/${surah}/reading/page/${currentPage}`}
-        replace
-      />
+      <Navigate to={`/surah/${surah}/reading/page/${currentPage}`} replace />
     );
   }
 
@@ -333,13 +330,11 @@ export function SurahVerseRoute() {
 
   useEffect(() => {
     if (ayahMismatch) return;
-    remember({ surah, ayah, view: 'verse', mushafPage: 1 });
+    remember({ surah, ayah, view: "verse", mushafPage: 1 });
   }, [surah, ayah, remember, ayahMismatch]);
 
   if (ayahMismatch) {
-    return (
-      <Navigate to={`/surah/${surah}/verse/${ayah}`} replace />
-    );
+    return <Navigate to={`/surah/${surah}/verse/${ayah}`} replace />;
   }
 
   return (
