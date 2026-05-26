@@ -105,7 +105,7 @@
   }
 
   .reader-home-btn {
-    @apply inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/20 bg-white/10 text-white transition hover:bg-white/20 active:scale-[0.98];
+    @apply inline-flex h-10 shrink-0 items-center justify-center gap-1.5 rounded-xl border border-white/20 bg-white/10 px-3 text-white transition hover:bg-white/20 active:scale-[0.98];
   }
 
   /* Mobile reader — unified bottom dock (pages + actions) */
@@ -140,6 +140,10 @@
 
   .reader-mobile-dock-btn {
     @apply flex min-h-[2.25rem] flex-1 flex-row items-center justify-center gap-1 rounded-xl px-1.5 py-1.5 text-[10px] font-bold leading-tight text-quran-primary transition active:scale-[0.98];
+  }
+
+  .reader-mobile-dock-btn--home {
+    @apply bg-quran-surface text-quran-primary;
   }
 
   .reader-mobile-dock-btn--listen {

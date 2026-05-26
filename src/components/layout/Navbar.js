@@ -34,6 +34,10 @@ export default function Navbar() {
           </span>
         </Link>
         <div className="flex shrink-0 items-center gap-1 md:gap-2">
+          <NavLink to="/" end className={`${navClass} md:hidden`}>
+            <IconHome className="nav-link-icon h-[1.125rem] w-[1.125rem]" />
+            <span className="sr-only">{t("nav.home")}</span>
+          </NavLink>
           <LanguageToggle />
           <div className="hidden md:flex md:items-center md:gap-2">
             <NavLink to="/" end className={navClass}>

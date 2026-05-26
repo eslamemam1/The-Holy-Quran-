@@ -226,9 +226,9 @@ export default function SurahReaderHeader({
                 to="/"
                 className="reader-home-btn"
                 aria-label={t('nav.home')}
-                title={t('nav.home')}
               >
-                <IconHome className="h-5 w-5" />
+                <IconHome className="h-5 w-5 shrink-0" />
+                <span className="text-xs font-bold">{t('nav.home')}</span>
               </Link>
               <SurahPicker
                 currentSurah={surah}
@@ -246,6 +246,14 @@ export default function SurahReaderHeader({
       >
         <MobilePageNav pageNav={pageNav} t={t} lang={lang} />
         <div className="reader-mobile-dock-actions">
+          <Link
+            to="/"
+            className="reader-mobile-dock-btn reader-mobile-dock-btn--home"
+            aria-label={t('nav.home')}
+          >
+            <IconHome className="h-4 w-4 shrink-0" />
+            <span>{t('nav.home')}</span>
+          </Link>
           <ReaderActionButtons
             showListen={showListen}
             playing={playing}
